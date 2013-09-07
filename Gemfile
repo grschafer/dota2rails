@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+ruby "2.0.0"
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.0'
 
@@ -49,3 +51,6 @@ gem 'omniauth-steam'
 
 # gem for managing environment variables (steam webapi key)
 gem 'figaro'
+
+# Heroku integration gem
+gem 'rails_12factor', group: :production
