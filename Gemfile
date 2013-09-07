@@ -43,3 +43,9 @@ end
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
+
+# use Steam OpenID Omniauth gem for authenticating Steam users
+gem 'omniauth-steam'
+
+# gem for managing environment variables (steam webapi key)
+gem 'figaro'

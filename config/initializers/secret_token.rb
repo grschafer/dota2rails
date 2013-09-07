@@ -9,4 +9,4 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-Dota2rails::Application.config.secret_key_base = '67082e8ec3e9cb8154057010dc91eefd354c2483556bff0fa95ceecb11ed72a7ead711d78b59b4a186bc47c8056561c52c0dad44544ceb15a494de0dde94eee4'
+Dota2rails::Application.config.secret_key_base = ENV['SECRET_TOKEN']
