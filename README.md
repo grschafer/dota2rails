@@ -25,23 +25,30 @@ secret`)
 
 ## To Deploy to Heroku
 
-5. Set Heroku environment variables, either by running `rake figaro:heroku`
+5. Login to Heroku and create the Heroku application:
+
+    ```bash
+    $ heroku login
+    $ heroku create
+    ```
+
+6. Set Heroku environment variables, either by running `rake figaro:heroku`
 (though that didn't work for me due to some lurking ActiveRecord config) or by
 running the following with your api key and app secret:
 
-```bash
-$ heroku config:add STEAM_WEB_API_KEY='234F789DC78E6A88B987AD87F00F'
-$ heroku config:add SECRET_TOKEN='904150a195ef13012705d0c15751b333b2b79cb1678ffe4191d29635d0c57175ea7354b8f4c3290b1085363b7eb546b7d49ca7e40bebee3dced5dc9524f4cbe7'
-```
+    ```bash
+    $ heroku config:add STEAM_WEB_API_KEY='234F789DC78E6A88B987AD87F00F'
+    $ heroku config:add SECRET_TOKEN='904150a195ef13012705d0c15751b333b2b79cb1678ffe4191d29635d0c57175ea7354b8f4c3290b1085363b7eb546b7d49ca7e40bebee3dced5dc9524f4cbe7'
+    ```
 
-6. From here it should just involve the following commands:
+7. Push the app to heroku and it should deploy successfully:
 
-```bash
-$ heroku login
-$ heroku create
-$ git push heroku master
-$ heroku open
-```
+    ```bash
+    $ git push heroku master
+    $ heroku open
+    ```
+
+Let me know if you encounter any issues!
 
 More detailed instructions can be found at the afore-linked walkthrough: <http://grschafer.com/guides/2013/09/07/steam-openid-and-webapi-with-rails/>
 
