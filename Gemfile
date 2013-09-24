@@ -46,11 +46,13 @@ end
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
-# use Steam OpenID Omniauth gem for authenticating Steam users
-gem 'omniauth-steam'
-
 # gem for managing environment variables (steam webapi key)
 gem 'figaro'
 
 # Heroku integration gem
 gem 'rails_12factor', group: :production
+
+# mongo
+gem 'mongo'
+gem 'bson_ext'
+

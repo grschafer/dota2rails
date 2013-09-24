@@ -1,11 +1,11 @@
 Dota2rails::Application.routes.draw do
-  get "welcome/index"
+  resources :matches
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
-  post 'auth/steam/callback' => 'welcome#auth_callback'
 
   # You can have the root of your site routed with "root"
-  root 'welcome#index'
+  root 'matches#index'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

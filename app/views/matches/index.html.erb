@@ -1,0 +1,35 @@
+<h1>Listing matches</h1>
+
+
+
+<table>
+  <thead>
+    <tr>
+      <th>Match</th>
+      <th>Date</th>
+      <th>Radiant</th>
+      <th>Dire</th>
+      <th>Duration</th>
+      <th># Wards</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @matches.sort { |x,y| x['match_id'] <=> y['match_id']}.each do |match| %>
+      <tr>
+        <td><%= match['match_id'] %></td>
+        <td><%= DateTime.strptime(match['start_time'].to_s, '%s').in_time_zone('Pacific Time (US & Canada)').to_formatted_s(:rfc822) %></td>
+        <td><%= content_tag(match['radiant_win'] ? :strong : :p, match['radiant_name']) %></td>
+        <td><%= content_tag(match['radiant_win'] ? :p : :strong, match['dire_name']) %></td>
+        <td><%= Time.at(match['duration']).utc.strftime('%H:%M:%S') %></td>
+        <td><%= match['wards'].size %></td>
+        <td><%= link_to 'Show', match_path(match['match_id']) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<!-- <%= link_to 'New Match', new_match_path %> -->

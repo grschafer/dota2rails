@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Match:</strong>
+  <%= @match['match_id'] %>
+</p>
+
+<%= render partial: 'matches/partials/wards', locals: {wards: @match['wards']} %>
+
+
+<p><%= @match['positions'].size %></p>
+<p><%= @match['escapes'].size %></p>
+<p><%= @match['roshans'].size %></p>
+<p><%= @match['gold_graph']['tick'].size %></p>
+<p><%= @match['buybacks'].size %></p>
+
+<%= render partial: 'matches/partials/buybacks', locals: {buybacks: match['buybacks']} %>
+
+<%= link_to 'Back', matches_path %>
