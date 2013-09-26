@@ -3,15 +3,15 @@
     <tr>
       <th>Time</th>
       <th>Hero</th>
-      <th>Cost</th>
+      <th>Event</th>
     </tr>
   </thead>
   <tbody>
-  <% for buyback in buybacks %>
+  <% for roshan in roshans %>
     <tr>
-      <td><%= buyback['tick'] %></td>
-      <td><%= buyback['hero'] %></td>
-      <td><%= buyback['cost'] %></td>
+      <td><%= roshan['tick'] %></td>
+      <td><%= roshan['hero'] %></td>
+      <td><%= roshan['event'] %></td>
     </tr>
   <% end %>
   </tbody>

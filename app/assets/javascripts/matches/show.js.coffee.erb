@@ -1,0 +1,76 @@
+# Place all the behaviors and hooks related to the matching controller here.
+# All this logic will automatically be available in application.js.
+# You can use CoffeeScript in this file: http://coffeescript.org/
+
+
+window.DOTA2RAILS.matches.show = ->
+  world_to_img = (x,y) ->
+    x: (8576.0 + x) * 0.0366 + -12.4219,
+    y: (8192.0 - y) * 0.0367 + -1.2082
+
+  mapfile = "<%= asset_path 'dota_gray_blur_600x580.jpg' %>"
+  rad_ward = "<%= asset_path 'radiant_ward_short.png' %>"
+  dire_ward = "<%= asset_path 'dire_ward_short.png' %>"
+
+  mapw = 600
+  maph = 580
+
+  # dota player colors
+  colors = ["rgba(39, 105, 229, 0.3)", "rgba(92, 229, 172, 0.3)", "rgba(172, 0, 172, 0.3)", "rgba(219, 216, 9, 0.3)", "rgba(229, 97, 0, 0.3)", "rgba(229, 121, 175, 0.3)", "rgba(145, 163, 63, 0.3)", "rgba(91, 196, 223, 0.3)", "rgba(0, 118, 30, 0.3)", "rgba(148, 95, 0, 0.3)"];
+
+  # spaceship operator equivalent
+  cmp = (a,b) ->
+    switch
+      when a > b then +1
+      when a < b then -1
+      else 0
+
+  # ward map
+  ward_map = ->
+    element_id = "ward_map"
+    draw = SVG(element_id).size(mapw, maph)
+    image = draw.image(mapfile).size(mapw, maph)
+
+    draw_ward = (ward) ->
+      pos = world_to_img ward['x'], ward['y']
+      team = ward['team']
+
+      draw.image(if team is 'radiant' then rad_ward else dire_ward)
+          .size(15,36)
+          .center(pos['x'], pos['y'] - 18)
+
+    wards = $("##{element_id}").data('wards')
+    wards.sort (a,b) -> cmp a['y'], b['y']
+    draw_ward ward for ward in wards.reverse()
+  ward_map()
+
+  # positions map
+  position_maps = ->
+    container_left = document.getElementById('map_container_left')
+    container_right = document.getElementById('map_container_right')
+    positions = $(container_left).parent().data('positions')
+    heroes = (name for name of positions when name isnt 'tick')
+    dot_size = 5
+    draw_map = (i) ->
+      newCanvas = document.createElement 'div'
+      newCanvas.setAttribute 'id', 'map' + i
+      if i < 5
+        container_left.appendChild newCanvas
+      else
+        container_right.appendChild newCanvas
+
+      draw = SVG('map' + i).size(mapw, maph)
+      image = draw.image(mapfile).size(mapw, maph)
+      rect = draw.rect(600, 580).fill('black')
+      rect.hide()
+      draw.on 'mouseover', -> rect.show()
+      draw.on 'mouseout', -> rect.hide()
+      drawPt = draw.defs().rect(dot_size, dot_size).fill(colors[i])
+      for p in positions[heroes[i]]
+        do (p) ->
+          pt = world_to_img p[0], p[1]
+          draw.use(drawPt).move pt['x'], pt['y']
+
+    draw_map i for i in [0..9]
+  position_maps()
+

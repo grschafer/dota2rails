@@ -5,15 +5,29 @@
   <%= @match['match_id'] %>
 </p>
 
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#">Summary</a></li>
+  <li><a href="#">Gold/XP</a></li>
+  <li><a href="#">Kills</a></li>
+  <li><a href="#">Heatmap</a></li>
+  <li><a href="#">Escapes</a></li>
+  <li><a href="#">Wards</a></li>
+  <li><a href="#">Buybacks/Roshans</a></li>
+  <li><a href="#">Runes</a></li>
+</ul>
+
+Matches have ANALYSES
+  git commit everything current then...
+  make them a subresource and fix all the project structure
+
 <%= render partial: 'matches/partials/wards', locals: {wards: @match['wards']} %>
 
 
-<p><%= @match['positions'].size %></p>
-<p><%= @match['escapes'].size %></p>
-<p><%= @match['roshans'].size %></p>
-<p><%= @match['gold_graph']['tick'].size %></p>
-<p><%= @match['buybacks'].size %></p>
-
-<%= render partial: 'matches/partials/buybacks', locals: {buybacks: match['buybacks']} %>
+<%= render partial: 'matches/partials/buybacks', locals: {buybacks: @match['buybacks']} %>
+<%= render partial: 'matches/partials/escapes', locals: {escapes: @match['escapes']} %>
+<%= render partial: 'matches/partials/gold_graph', locals: {gold: @match['gold_graph']} %>
+<%= render partial: 'matches/partials/roshans', locals: {roshans: @match['roshans']} %>
+<%= render partial: 'matches/partials/kill_list', locals: {kill_list: @match['kill_list']} %>
+<%= render partial: 'matches/partials/positions', locals: {positions: @match['positions']} %>
 
 <%= link_to 'Back', matches_path %>

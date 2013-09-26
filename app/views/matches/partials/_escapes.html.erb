@@ -1,0 +1,18 @@
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Time</th>
+      <th>Hero</th>
+      <th>Lowest HP</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% for escape in escapes %>
+    <tr>
+      <td><%= escape['tick'] %></td>
+      <td><%= escape['hero'] %></td>
+      <td><%= escape['escape'].min_by { |x| x['hp'] }['hp'] %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

@@ -11,6 +11,12 @@ gem 'rails', '4.0.0'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'
 
+# including by github because bootstrap3 gem hasn't been published
+# but bootstrap3 is the main branch on the repo (otherwise would
+# need to specify branch: '3'
+# https://github.com/thomas-mcdonald/bootstrap-sass/issues/428
+gem 'bootstrap-sass', github: 'thomas-mcdonald/bootstrap-sass'
+
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 
@@ -56,3 +62,9 @@ gem 'rails_12factor', group: :production
 gem 'mongo'
 gem 'bson_ext'
 
+# http://railscasts.com/episodes/402-better-errors-railspanel?autoplay=true
+group :development do
+  gem 'better_errors'
+  gem 'binding_of_caller'
+  gem 'meta_request'
+end

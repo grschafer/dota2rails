@@ -14,3 +14,7 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require svg
+//= require nv.d3
+//= require init
+//= require_tree ./matches
+

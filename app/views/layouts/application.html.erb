@@ -3,14 +3,41 @@
 <head>
   <title>Dota2rails</title>
   <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
-  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
-  <%= javascript_include_tag params[:controller], "data-turbolinks-track" => true %>
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+  <%#<%= javascript_include_tag params[:controller], "data-turbolinks-track" => true %>
   <%= csrf_meta_tags %>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
-<body>
 
-<%= yield %>
+</head>
+<body data-controller="<%= controller_name %>" data-action="<%= action_name %>">
+
+<nav class="navbar navbar-default container" role="navigation">
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="/">Dota2Rails</a>
+  </div>
+
+  <!-- Collect the nav links, forms, and other content for toggling -->
+  <div class="collapse navbar-collapse navbar-ex1-collapse">
+    <ul class="nav navbar-nav">
+      <li><a href="/matches">The International 3</a></li>
+      <li class="active">
+        <%= content_tag 'a', "Match #{params[:id]}", href:'#' if params.key?(:id) %>
+      </li>
+    </ul>
+  </div><!-- /.navbar-collapse -->
+</nav>
+
+<div class="container">
+  <%= yield %>
+</div>
 
 </body>
+<%= javascript_include_tag "application", "data-turbolinks-track" => true %>
 </html>
