@@ -1,3 +1,5 @@
+<%= render 'tabnav' %>
+
 <table class="table table-striped">
   <thead>
     <tr>
@@ -7,7 +9,7 @@
     </tr>
   </thead>
   <tbody>
-  <% for buyback in buybacks %>
+  <% for buyback in @match['buybacks'] %>
     <tr>
       <td><%= buyback['tick'] %></td>
       <td><%= buyback['hero'] %></td>

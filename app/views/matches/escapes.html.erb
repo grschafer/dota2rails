@@ -1,3 +1,5 @@
+<%= render 'tabnav' %>
+
 <table class="table table-hover">
   <thead>
     <tr>
@@ -7,7 +9,7 @@
     </tr>
   </thead>
   <tbody>
-  <% for escape in escapes %>
+  <% for escape in @match['escapes'] %>
     <tr>
       <td><%= escape['tick'] %></td>
       <td><%= escape['hero'] %></td>

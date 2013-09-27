@@ -1,0 +1,8 @@
+<%= render 'tabnav' %>
+
+<%= content_tag "div", class: "row", data: {positions: @match['positions']} do %>
+  <%= content_tag "div", class: "col-md-6", id: "map_container_left" do %>
+  <% end %>
+  <%= content_tag "div", class: "col-md-6", id: "map_container_right" do %>
+  <% end %>
+<% end %>

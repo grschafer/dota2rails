@@ -2,7 +2,7 @@
 
 
 
-<table>
+<table class="table table-striped">
   <thead>
     <tr>
       <th>Match</th>
@@ -10,7 +10,6 @@
       <th>Radiant</th>
       <th>Dire</th>
       <th>Duration</th>
-      <th># Wards</th>
       <th></th>
     </tr>
   </thead>
@@ -23,8 +22,7 @@
         <td><%= content_tag(match['radiant_win'] ? :strong : :p, match['radiant_name']) %></td>
         <td><%= content_tag(match['radiant_win'] ? :p : :strong, match['dire_name']) %></td>
         <td><%= Time.at(match['duration']).utc.strftime('%H:%M:%S') %></td>
-        <td><%= match['wards'].size %></td>
-        <td><%= link_to 'Show', match_path(match['match_id']) %></td>
+        <td><%= link_to 'Show', summary_match_path(match['match_id']) %></td>
       </tr>
     <% end %>
   </tbody>

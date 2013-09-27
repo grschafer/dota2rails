@@ -3,7 +3,7 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 
-window.DOTA2RAILS.matches.show = ->
+window.DOTA2RAILS.matches.wards = ->
   world_to_img = (x,y) ->
     x: (8576.0 + x) * 0.0366 + -12.4219,
     y: (8192.0 - y) * 0.0367 + -1.2082
@@ -43,34 +43,4 @@ window.DOTA2RAILS.matches.show = ->
     wards.sort (a,b) -> cmp a['y'], b['y']
     draw_ward ward for ward in wards.reverse()
   ward_map()
-
-  # positions map
-  position_maps = ->
-    container_left = document.getElementById('map_container_left')
-    container_right = document.getElementById('map_container_right')
-    positions = $(container_left).parent().data('positions')
-    heroes = (name for name of positions when name isnt 'tick')
-    dot_size = 5
-    draw_map = (i) ->
-      newCanvas = document.createElement 'div'
-      newCanvas.setAttribute 'id', 'map' + i
-      if i < 5
-        container_left.appendChild newCanvas
-      else
-        container_right.appendChild newCanvas
-
-      draw = SVG('map' + i).size(mapw, maph)
-      image = draw.image(mapfile).size(mapw, maph)
-      rect = draw.rect(600, 580).fill('black')
-      rect.hide()
-      draw.on 'mouseover', -> rect.show()
-      draw.on 'mouseout', -> rect.hide()
-      drawPt = draw.defs().rect(dot_size, dot_size).fill(colors[i])
-      for p in positions[heroes[i]]
-        do (p) ->
-          pt = world_to_img p[0], p[1]
-          draw.use(drawPt).move pt['x'], pt['y']
-
-    draw_map i for i in [0..9]
-  position_maps()
 

@@ -1,0 +1,22 @@
+<%= render 'tabnav' %>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Time</th>
+      <th>Hero</th>
+      <th>Event</th>
+      <th>Rune Type</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% for rune in @match['runes'] %>
+    <tr>
+      <td><%= rune['tick'] %></td>
+      <td><%= rune['player'] %></td>
+      <td><%= rune['event'] %></td>
+      <td><%= rune['rune_type'] %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
