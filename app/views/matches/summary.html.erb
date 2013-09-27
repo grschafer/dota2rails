@@ -7,7 +7,74 @@
 
 <%= render 'tabnav' %>
 
-<p>TODO: SUMMARY INFO FROM MATCH thing</p>
+<div class="col-md-2">
+  <p>Match ID: <%= @match['match_id'] %></p>
+</div>
+<div class="col-md-2">
+  <p>Duration: <%= sec_to_hms(@match['duration']) %></p>
+</div>
+<div class="col-md-4">
+  <p>Winner: <%= @match['radiant_win'] ? @match['radiant_name'] : @match['dire_name'] %></p>
+</div>
+<div class="col-md-4">
+  <p>Date: <%= unix_to_rfc822(@match['start_time']) %></p>
+</div>
+
+<br />
+
+<% [@match['players'][0..4], @match['players'][5..9]].each_with_index do |players, idx| %>
+  <h3><%= idx == 0 ? @match['radiant_name'] : @match['dire_name'] %></h3>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Player</th>
+        <th>Level</th>
+        <th>Hero</th>
+        <th>K/D/A</th>
+        <th>Items</th>
+        <th>Gold</th>
+        <th>LH/D</th>
+        <th>Gold/Min</th>
+        <th>XP/Min</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% for player in players %>
+        <tr>
+          <td><%= player['account_id'] %></td>
+          <td><%= player['level'] %></td>
+          <td><%= player['hero_id'] %></td>
+          <td><%= [player['kills'], player['deaths'], player['assists']].join(" / ") %></td>
+          <td><%= (0..5).map { |x| player["item_#{x}"] }.join(", ") %></td>
+          <td><%= player['gold'] %></td>
+          <td><%= player['last_hits'] %> / <%= player['denies'] %></td>
+          <td><%= player['gold_per_min'] %></td>
+          <td><%= player['xp_per_min'] %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
 
 
-<%= link_to 'Back', matches_path %>
+<%#
+  team names
+  team sides (radiant, dire)
+  winner
+  date of match
+  duration
+  match id (dotabuff link?)
+  youtube link?
+  rax/tower status?
+  player table
+    name
+    level
+    hero
+    k/d/a
+    items
+    ending gold
+    last hits
+    denies
+    gpm
+    xpm
+%>

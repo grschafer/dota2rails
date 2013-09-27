@@ -2,7 +2,7 @@
 
 
 
-<table class="table table-striped">
+<table class="table table-hover">
   <thead>
     <tr>
       <th>Match</th>
@@ -10,19 +10,17 @@
       <th>Radiant</th>
       <th>Dire</th>
       <th>Duration</th>
-      <th></th>
     </tr>
   </thead>
 
   <tbody>
     <% @matches.sort { |x,y| x['match_id'] <=> y['match_id']}.each do |match| %>
-      <tr>
+      <tr style="cursor: pointer;" onclick="document.location = '<%= summary_match_url(match['match_id']) %>';">
         <td><%= match['match_id'] %></td>
-        <td><%= DateTime.strptime(match['start_time'].to_s, '%s').in_time_zone('Pacific Time (US & Canada)').to_formatted_s(:rfc822) %></td>
+        <td><%= unix_to_rfc822(match['start_time']) %></td>
         <td><%= content_tag(match['radiant_win'] ? :strong : :p, match['radiant_name']) %></td>
         <td><%= content_tag(match['radiant_win'] ? :p : :strong, match['dire_name']) %></td>
-        <td><%= Time.at(match['duration']).utc.strftime('%H:%M:%S') %></td>
-        <td><%= link_to 'Show', summary_match_path(match['match_id']) %></td>
+        <td><%= sec_to_hms(match['duration']) %></td>
       </tr>
     <% end %>
   </tbody>
