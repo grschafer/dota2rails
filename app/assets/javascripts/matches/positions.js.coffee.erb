@@ -5,48 +5,42 @@
 # TODO: DRY UP ANALYSIS JAVASCRIPT FILES (PULL OUT HELPER/UTILITY STUFF)
 window.DOTA2RAILS.matches.positions = ->
   mapfile = "<%= asset_path 'dota_gray_blur_600x580.jpg' %>"
-  #world_to_img = (x,y) ->
-  #  x: (8576.0 + x) * 0.0366 + -12.4219,
-  #  y: (8192.0 - y) * 0.0367 + -1.2082
-  #mapw = 600
-  #maph = 580
-
   world_to_img = (x,y) ->
-    x: (8576.0 + x) * 0.0345 + -12.7708,
-    y: (8192.0 - y) * 0.0346 + -1.4402
-  mapw = 560
-  maph = 540
+    x: (8576.0 + x) * 0.0366 + -12.4219,
+    y: (8192.0 - y) * 0.0367 + -1.2082
+  mapw = 600
+  maph = 580
 
   # dota player colors
-  colors = ["rgba(39, 105, 229, 0.3)", "rgba(92, 229, 172, 0.3)", "rgba(172, 0, 172, 0.3)", "rgba(219, 216, 9, 0.3)", "rgba(229, 97, 0, 0.3)", "rgba(229, 121, 175, 0.3)", "rgba(145, 163, 63, 0.3)", "rgba(91, 196, 223, 0.3)", "rgba(0, 118, 30, 0.3)", "rgba(148, 95, 0, 0.3)"];
+  colors = ["rgba(39, 105, 229, 1)", "rgba(92, 229, 172, 1)", "rgba(172, 0, 172, 1)", "rgba(219, 216, 9, 1)", "rgba(229, 97, 0, 1)", "rgba(229, 121, 175, 1)", "rgba(145, 163, 63, 1)", "rgba(91, 196, 223, 1)", "rgba(0, 118, 30, 1)", "rgba(148, 95, 0, 1)"];
+
+  curtick = 0
+  container = document.getElementById('map')
+  positions = $(container).data('positions')
+  heroes = (name for name of positions when name isnt 'tick')
+  dot_size = 5
+  newCanvas = document.createElement 'div'
+  container.appendChild newCanvas
+  draw = SVG('map').size(mapw, maph)
+  image = draw.image(mapfile).size(mapw, maph)
+  #rect = draw.rect(600, 580).fill('black')
+  #rect.hide()
+  #draw.on 'mouseover', -> rect.show()
+  #draw.on 'mouseout', -> rect.hide()
+  drawPt = draw.defs().rect(dot_size, dot_size)
+  old = []
 
   # positions map
-  position_maps = ->
-    container_left = document.getElementById('map_container_left')
-    container_right = document.getElementById('map_container_right')
-    positions = $(container_left).parent().data('positions')
-    heroes = (name for name of positions when name isnt 'tick')
-    dot_size = 5
-    draw_map = (i) ->
-      newCanvas = document.createElement 'div'
-      newCanvas.setAttribute 'id', 'map' + i
-      if i < 5
-        container_left.appendChild newCanvas
-      else
-        container_right.appendChild newCanvas
+  update = (tick) ->
+    console.log tick
+    r.remove() for r in old
+    for hero,i in heroes
+      for pos,j in positions[hero]
+        break if positions['tick'][j] > tick
+      pt = world_to_img pos[0], pos[1]
+      old.push draw.use(drawPt).fill(colors[i]).move(pt['x'], pt['y'])
 
-      draw = SVG('map' + i).size(mapw, maph)
-      image = draw.image(mapfile).size(mapw, maph)
-      rect = draw.rect(600, 580).fill('black')
-      rect.hide()
-      draw.on 'mouseover', -> rect.show()
-      draw.on 'mouseout', -> rect.hide()
-      drawPt = draw.defs().rect(dot_size, dot_size).fill(colors[i])
-      for p in positions[heroes[i]]
-        do (p) ->
-          pt = world_to_img p[0], p[1]
-          draw.use(drawPt).move pt['x'], pt['y']
-
-    draw_map i for i in [0..9]
-  position_maps()
-
+  timer_tick = positions['tick'][0]
+  #timer = setInterval update, 1000, -> timer_tick += 90
+  update_wrapper = -> update timer_tick += 150
+  timer = setInterval update_wrapper, 1000
