@@ -1,11 +1,5 @@
 <%= render 'tabnav' %>
 
-<%= content_tag "div", id: "gold_graph", data: {gold: @match['gold_graph']} do %>
-<% end %>
-
-<%= content_tag "div", id: "xp_graph", data: {xp: @match['xp_graph']} do %>
-<% end %>
-
 <%= content_tag "div", id: "gold_chart", data: {gold: @match['gold_graph']} do %>
   <svg style="height:500px"></svg>
 <% end %>
