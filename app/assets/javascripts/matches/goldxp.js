@@ -87,6 +87,8 @@ window.DOTA2RAILS.matches.goldxp = function() {
   var timer_tick = 14874; // TODO: don't hardcode!
   var timer = setInterval(function () {
     timer_tick += 900;
+    if (timer_tick > 100000)
+      clearInterval(timer);
     update(timer_tick, null);
   }, 1000);
 };

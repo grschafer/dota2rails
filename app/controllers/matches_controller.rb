@@ -17,6 +17,9 @@ class MatchesController < ApplicationController
   def summary
   end
 
+  def eventlog
+  end
+
   def goldxp
   end
 

@@ -10,6 +10,7 @@ Dota2rails::Application.routes.draw do
       get 'buybacks'
       get 'roshans'
       get 'runes'
+      get 'eventlog'
     end
   end
 

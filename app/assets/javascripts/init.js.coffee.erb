@@ -20,3 +20,5 @@ UTIL =
     UTIL.exec controller, action
 
 jQuery(document).ready UTIL.init
+# turbolinks event
+jQuery(document).on 'page:load', UTIL.init

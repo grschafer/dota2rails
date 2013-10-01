@@ -12,6 +12,7 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery.scrollto
 //= require turbolinks
 //= require svg
 //= require nv.d3

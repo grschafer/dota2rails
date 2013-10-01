@@ -57,7 +57,7 @@ window.DOTA2RAILS.matches.positions = ->
 
   timer_tick = positions['tick'][0]
   update_wrapper = ->
-    timer_tick += 300
+    timer_tick += 150
     for val,idx in positions['tick']
       break if val > timer_tick
     data = []
