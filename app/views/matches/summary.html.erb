@@ -7,6 +7,9 @@
 
 <%= render 'tabnav' %>
 
+<%= content_tag "div", id: "scoreboard", data: {scoreboards: @match['scoreboards'], players: @match['player_names']} do %>
+<% end %>
+
 <div class="col-md-2">
   <p>Match ID: <%= @match['match_id'] %></p>
 </div>
@@ -24,30 +27,41 @@
 
 <% [@match['players'][0..4], @match['players'][5..9]].each_with_index do |players, idx| %>
   <h3><%= idx == 0 ? @match['radiant_name'] : @match['dire_name'] %></h3>
-  <table class="table table-striped">
+  <table class="table">
     <thead>
       <tr>
         <th>Player</th>
-        <th>Level</th>
         <th>Hero</th>
-        <th>K/D/A</th>
-        <th>Items</th>
+        <th>Level</th>
+        <th>K</th>
+        <th>D</th>
+        <th>A</th>
+        <th colspan="6">Items</th>
         <th>Gold</th>
-        <th>LH/D</th>
+        <th>LH</th>
+        <th>D</th>
         <th>Gold/Min</th>
         <th>XP/Min</th>
       </tr>
     </thead>
-    <tbody>
+    <tbody id="<%= idx == 0 ? "radiant_players" : "dire_players" %>">
       <% for player in players %>
         <tr>
           <td><%= player['account_id'] %></td>
           <td><%= player['level'] %></td>
           <td><%= player['hero_id'] %></td>
-          <td><%= [player['kills'], player['deaths'], player['assists']].join(" / ") %></td>
-          <td><%= (0..5).map { |x| player["item_#{x}"] }.join(", ") %></td>
+          <td><%= player['kills'] %></td>
+          <td><%= player['deaths'] %></td>
+          <td><%= player['assists'] %></td>
+          <td><%= player['item_0'] %></td>
+          <td><%= player['item_1'] %></td>
+          <td><%= player['item_2'] %></td>
+          <td><%= player['item_3'] %></td>
+          <td><%= player['item_4'] %></td>
+          <td><%= player['item_5'] %></td>
           <td><%= player['gold'] %></td>
-          <td><%= player['last_hits'] %> / <%= player['denies'] %></td>
+          <td><%= player['last_hits'] %></td>
+          <td><%= player['denies'] %></td>
           <td><%= player['gold_per_min'] %></td>
           <td><%= player['xp_per_min'] %></td>
         </tr>

@@ -1,19 +1,7 @@
 // Place all the styles related to the matches controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
 
-.x.axis path {
-  display: none;
-}
-
-.line {
-  fill: none;
-  stroke: steelblue;
-  stroke-width: 1.5px;
+.cell-change {
+  background-color: #ff0;
 }
