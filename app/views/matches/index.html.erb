@@ -15,7 +15,7 @@
 
   <tbody>
     <% @matches.sort { |x,y| x['match_id'] <=> y['match_id']}.each do |match| %>
-      <tr style="cursor: pointer;" onclick="document.location = '<%= summary_match_url(match['match_id']) %>';">
+      <tr style="cursor: pointer;" onclick="document.location = '<%= match_url(match['match_id']) %>';">
         <td><%= match['match_id'] %></td>
         <td><%= unix_to_rfc822(match['start_time']) %></td>
         <td><%= content_tag(match['radiant_win'] ? :strong : :p, match['radiant_name']) %></td>

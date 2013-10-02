@@ -11,7 +11,7 @@
 </head>
 <body data-controller="<%= controller_name %>" data-action="<%= action_name %>">
 
-<nav class="navbar navbar-default container" role="navigation">
+<nav class="navbar navbar-default" role="navigation">
   <!-- Brand and toggle get grouped for better mobile display -->
   <div class="navbar-header">
     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
@@ -28,15 +28,13 @@
     <ul class="nav navbar-nav">
       <li><a href="/matches">The International 3</a></li>
       <li class="active">
-        <%= link_to "Match #{params[:id]}", summary_match_path if params.key?(:id) %>
+        <%= link_to "Match #{params[:id]}", match_path if params.key?(:id) %>
       </li>
     </ul>
   </div><!-- /.navbar-collapse -->
 </nav>
 
-<div class="container">
-  <%= yield %>
-</div>
+<%= yield %>
 
 </body>
 <%= javascript_include_tag "application", "data-turbolinks-track" => true %>

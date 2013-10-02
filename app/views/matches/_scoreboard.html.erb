@@ -1,11 +1,3 @@
-<p id="notice"><%= notice %></p>
-
-<p>
-  <strong>Match:</strong>
-  <%= @match['match_id'] %>
-</p>
-
-<%= render 'tabnav' %>
 
 <%= content_tag "div", id: "scoreboard", data: {scoreboards: @match['scoreboards'], players: @match['player_names']} do %>
 <% end %>

@@ -14,36 +14,6 @@ class MatchesController < ApplicationController
   def show
   end
 
-  def summary
-  end
-
-  def eventlog
-  end
-
-  def goldxp
-  end
-
-  def kills
-  end
-
-  def positions
-  end
-
-  def escapes
-  end
-
-  def wards
-  end
-
-  def buybacks
-  end
-
-  def roshans
-  end
-
-  def runes
-  end
-
   private
     # Use callbacks to share common setup or constraints between actions.
     # TODO: CACHE MATCH

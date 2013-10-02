@@ -1,4 +1,3 @@
-<%= render 'tabnav' %>
 
 <% eventlog = @match['roshans'] + @match['buybacks'] + @match['runes'] + @match['kill_list'] %>
 <% eventlog.sort! { |x,y| x['tick'] <=> y['tick'] } %>

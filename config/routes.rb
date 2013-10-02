@@ -1,18 +1,5 @@
 Dota2rails::Application.routes.draw do
-  resources :matches do
-    member do
-      get 'summary'
-      get 'goldxp'
-      get 'kills'
-      get 'positions'
-      get 'escapes'
-      get 'wards'
-      get 'buybacks'
-      get 'roshans'
-      get 'runes'
-      get 'eventlog'
-    end
-  end
+  resources :matches
 
 
   # The priority is based upon order of creation: first created -> highest priority.
