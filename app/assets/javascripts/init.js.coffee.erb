@@ -1,13 +1,16 @@
+# implements dom-ready execution
+# http://viget.com/inspire/extending-paul-irishs-comprehensive-dom-ready-execution
+
 window.DOTA2RAILS =
   common: {}
-  matches: {}
+  matches:
+    components: {} # map, scoreboard, eventlog, graph components add to this
 
-# http://viget.com/inspire/extending-paul-irishs-comprehensive-dom-ready-execution
 UTIL =
   exec: (controller, action) ->
     ns = window.DOTA2RAILS
     action = if action is undefined then "init" else action
-    if controller isnt "" and ns[controller] and typeof ns[controller][action] == "function"
+    if controller isnt "" and ns[controller]? and typeof ns[controller][action] is "function"
       ns[controller][action]();
 
   init: ->

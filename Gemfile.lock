@@ -58,6 +58,9 @@ GEM
     figaro (0.7.0)
       bundler (~> 1.0)
       rails (>= 3, < 5)
+    gon (4.1.1)
+      actionpack (>= 2.3.0)
+      json
     hike (1.2.3)
     i18n (0.6.5)
     jbuilder (1.5.1)
@@ -147,6 +150,7 @@ DEPENDENCIES
   bson_ext
   coffee-rails (~> 4.0.0)
   figaro
+  gon
   jbuilder (~> 1.2)
   jquery-rails
   meta_request

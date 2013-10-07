@@ -3,7 +3,7 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 # TODO: DRY UP ANALYSIS JAVASCRIPT FILES (PULL OUT HELPER/UTILITY STUFF)
-window.DOTA2RAILS.matches.positions = ->
+window.DOTA2RAILS.matches.components.map = (() ->
   mapfile = "<%= asset_path 'dota_gray_blur_600x580.jpg' %>"
   world_to_img = (x,y) ->
     x: (8576.0 + x) * 0.0366 + -12.4219,
@@ -16,7 +16,8 @@ window.DOTA2RAILS.matches.positions = ->
 
   curtick = 0
   container = document.getElementById('map')
-  positions = $(container).data('positions')
+  #positions = $(container).data('positions')
+  positions = gon.match.positions
   heroes = (name for name of positions when name isnt 'tick')
   dot_size = 5
 
@@ -30,8 +31,15 @@ window.DOTA2RAILS.matches.positions = ->
     .attr("height", maph)
 
   # positions map
-  update = (tick, data) ->
-    console.log tick
+  update = (tick) ->
+    for val,idx in positions['tick']
+      break if val > tick
+    data = []
+    for h,i in heroes
+      continue if idx > positions[h].length
+      data.push {}
+      $.extend(data[i], {name: h}, world_to_img positions[h][idx]...)
+    #console.log tick
 
     # DATA JOIN
     rects = svg.selectAll("rect")
@@ -55,16 +63,11 @@ window.DOTA2RAILS.matches.positions = ->
     # EXIT
     rects.exit().remove()
 
-  timer_tick = positions['tick'][0]
-  update_wrapper = ->
-    timer_tick += 150
-    for val,idx in positions['tick']
-      break if val > timer_tick
-    data = []
-    for h,i in heroes
-      continue if idx > positions[h].length
-      data.push {}
-      $.extend(data[i], {name: h}, world_to_img positions[h][idx]...)
-    clearInterval(timer) if data.length is 0
-    update timer_tick, data
-  timer = setInterval update_wrapper, 100
+  #timer_tick = positions['tick'][0]
+  #update_wrapper = ->
+    #timer_tick += 150
+    #clearInterval(timer) if data.length is 0
+    #update timer_tick, data
+  #timer = setInterval update_wrapper, 100
+  {update: update}
+)()

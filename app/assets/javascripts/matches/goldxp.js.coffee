@@ -1,4 +1,9 @@
-window.DOTA2RAILS.matches.show = ->
+# Place all the behaviors and hooks related to the matching controller here.
+# All this logic will automatically be available in application.js.
+# You can use CoffeeScript in this file: http://coffeescript.org/
+
+# TODO: DRY UP ANALYSIS JAVASCRIPT FILES (PULL OUT HELPER/UTILITY STUFF)
+window.DOTA2RAILS.matches.components.graph = (() ->
   line_home = null
   nv.addGraph
     generate: ->
@@ -37,7 +42,7 @@ window.DOTA2RAILS.matches.show = ->
     colors = ["rgba(39, 105, 229, 1)", "rgba(92, 229, 172, 1)", "rgba(172, 0, 172, 1)", "rgba(219, 216, 9, 1)", "rgba(229, 97, 0, 1)", "rgba(229, 121, 175, 1)", "rgba(145, 163, 63, 1)", "rgba(91, 196, 223, 1)", "rgba(0, 118, 30, 1)", "rgba(148, 95, 0, 1)"]
     dataset = []
     for data_label in ['gold', 'xp']
-      data = $(id).data data_label
+      data = gon.match["#{data_label}_graph"]
       values = []
       for tick,idx in data.tick
         c = 0
@@ -53,7 +58,7 @@ window.DOTA2RAILS.matches.show = ->
       dataset.push {key: data_label, color: (if data_label is 'gold' then 'blue' else 'green'), values: values}
     dataset
 
-  update = (tick, data) ->
+  update = (tick) ->
     line = line_home.selectAll("line").data([tick])
     line.transition()
         .attr("transform", (d,i) -> "translate(#{d} 0)")
@@ -63,9 +68,11 @@ window.DOTA2RAILS.matches.show = ->
       .attr("x2", 0)
       .attr("y2", -420)
       .style("stroke", "red")
-  timer_tick = 14874
-  intFn = ->
-    timer_tick += 900
-    clearInterval(timer) if timer_tick > 100000
-    update timer_tick, null
-  timer = setInterval intFn, 1000
+  #timer_tick = 14874
+  #intFn = ->
+    #timer_tick += 900
+    #clearInterval(timer) if timer_tick > 100000
+    #update timer_tick, null
+  #timer = setInterval intFn, 1000
+  {update: update}
+)()

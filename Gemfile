@@ -62,6 +62,9 @@ gem 'rails_12factor', group: :production
 gem 'mongo'
 gem 'bson_ext'
 
+# gon - gets data from controller into view (as json)
+gem 'gon'
+
 # http://railscasts.com/episodes/402-better-errors-railspanel?autoplay=true
 group :development do
   gem 'better_errors'

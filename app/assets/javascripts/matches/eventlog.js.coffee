@@ -3,12 +3,12 @@
 # You can use CoffeeScript in this file: http://coffeescript.org/
 
 # TODO: DRY UP ANALYSIS JAVASCRIPT FILES (PULL OUT HELPER/UTILITY STUFF)
-window.DOTA2RAILS.matches.eventlog = ->
+window.DOTA2RAILS.matches.components.eventlog = (() ->
   eventlog = document.getElementById 'eventlog'
 
   last_scrolled = null
   update = (tick) ->
-    console.log tick
+    #console.log tick
 
     smallest_diff = Number.MAX_VALUE
     scrollto_obj = null
@@ -31,9 +31,11 @@ window.DOTA2RAILS.matches.eventlog = ->
         })
       last_scrolled = scrollto_obj
 
-  timer_tick = 34000
-  update_wrapper = ->
-    timer_tick += 100
-    clearInterval(timer) if timer_tick > 63000
-    update timer_tick
-  timer = setInterval update_wrapper, 200
+  #timer_tick = 34000
+  #update_wrapper = ->
+    #timer_tick += 100
+    #clearInterval(timer) if timer_tick > 63000
+    #update timer_tick
+  #timer = setInterval update_wrapper, 200
+  {update: update}
+)()
