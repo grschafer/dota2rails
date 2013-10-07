@@ -1,8 +1,13 @@
 <p id="notice"><%= notice %></p>
 
 <div class="row">
-  <div class="col-xs-12">
-    <input type="range" name="time">
+  <div class="col-xs-8">
+    <%= render partial: 'playback_slider',
+        locals: {start_time: @match['positions']['tick'][0],
+                 end_time: @match['positions']['tick'][-1]} %>
+  </div>
+  <div class="col-xs-4">
+    <%= render 'playback_controls' %>
   </div>
 </div>
 <div class="row">
