@@ -29,6 +29,7 @@ window.DOTA2RAILS.matches.components.map = (() ->
     .attr("xlink:href", (d) -> d)
     .attr("width", mapw)
     .attr("height", maph)
+  icon_container = svg.append("g")
 
   # positions map
   update = (tick) ->
@@ -42,7 +43,10 @@ window.DOTA2RAILS.matches.components.map = (() ->
     #console.log tick
 
     # DATA JOIN
-    rects = svg.selectAll("rect")
+    # TODO: use images instead of rectangles
+    #rects = svg.selectAll("rect")
+    #  .data(data, (d) -> d.name)
+    rects = icon_container.selectAll("image")
       .data(data, (d) -> d.name)
 
     # UPDATE
@@ -51,12 +55,17 @@ window.DOTA2RAILS.matches.components.map = (() ->
         .attr("y", (d) -> d['y'])
 
     # ENTER
-    rects.enter().append("rect")
+    #rects.enter().append("rect")
+    rects.enter().append("svg:image")
         .attr("x", (d) -> d['x'])
         .attr("y", (d) -> d['y'])
-        .attr("width", 5)
-        .attr("height", 5)
-        .style("fill", (d, i) -> colors[i])
+        #.attr("width", 5)
+        #.attr("height", 5)
+        .attr("width", 32)
+        .attr("height", 32)
+        .attr("xlink:href", (d) -> "/assets/miniheroes/#{d['name'].substring(14)}.png")
+        #.attr("viewBox", "0 0 32 32")
+        #.style("fill", (d, i) -> colors[i])
 
     # ENTER + UPDATE
 
