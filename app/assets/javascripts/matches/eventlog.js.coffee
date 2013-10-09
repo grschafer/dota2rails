@@ -7,18 +7,18 @@ window.DOTA2RAILS.matches.components.eventlog = (() ->
   eventlog = document.getElementById 'eventlog'
 
   last_scrolled = null
-  update = (tick) ->
-    #console.log tick
+  update = (time) ->
+    #console.log time
 
     smallest_diff = Number.MAX_VALUE
     scrollto_obj = null
     $('#eventlog .event').each (i, elem) ->
-      diff = Math.abs($(elem).data('tick') - tick)
+      diff = Math.abs($(elem).data('time') - time)
       if diff <= smallest_diff
         smallest_diff = diff
         scrollto_obj = elem
       else
-        return false # break early (events are sorted by tick)
+        return false # break early (events are sorted by time)
 
     if last_scrolled isnt scrollto_obj
       $(last_scrolled).css('background-color': $(scrollto_obj).css('background-color'))

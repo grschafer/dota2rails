@@ -1,11 +1,11 @@
 
 <% eventlog = @match['roshans'] + @match['buybacks'] + @match['runes'] + @match['kill_list'] %>
-<% eventlog.sort! { |x,y| x['tick'] <=> y['tick'] } %>
+<% eventlog.sort! { |x,y| x['time'] <=> y['time'] } %>
 
 <div id="eventlog" class="container" style="height:200px; overflow-y:scroll;">
 <% for evt in eventlog %>
   <div class="row">
-    <%= content_tag "div", class: "event col-md-12", data: {tick: evt['tick']} do %>
+    <%= content_tag "div", class: "event col-md-12", data: {time: evt['time']} do %>
       <%= evt.inspect %>
     <% end %>
   </div>

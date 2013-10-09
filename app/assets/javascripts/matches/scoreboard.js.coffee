@@ -19,15 +19,15 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
     #.attr("width", mapw)
     #.attr("height", maph)
 
-  update = (tick) ->
-    for val,idx in scoreboards
-      break if val['tick'] > tick
+  update = (time) ->
+    for scoreboard,idx in scoreboards
+      break if scoreboard['time'] > time
 
     data = []
-    for hero,s of scoreboards[idx-1] when hero isnt 'tick'
+    for hero,s of scoreboards[idx-1] when hero isnt 'time'
       name = (name for name,h of players when h is hero)[0]
       data.push [name, hero, s.l, s.k, s.d, s.a, s.i0, s.i1, s.i2, s.i3, s.i4, s.i5, s.g, s.lh, s.dn, s.gpm, s.xpm]
-    #console.log tick
+    #console.log time
 
     # DATA JOIN
     radtable = d3.select("#radiant_players")

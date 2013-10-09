@@ -14,11 +14,11 @@ window.DOTA2RAILS.matches.components.map = (() ->
   # dota player colors
   colors = ["rgba(39, 105, 229, 1)", "rgba(92, 229, 172, 1)", "rgba(172, 0, 172, 1)", "rgba(219, 216, 9, 1)", "rgba(229, 97, 0, 1)", "rgba(229, 121, 175, 1)", "rgba(145, 163, 63, 1)", "rgba(91, 196, 223, 1)", "rgba(0, 118, 30, 1)", "rgba(148, 95, 0, 1)"];
 
-  curtick = 0
+  curtime = 0
   container = document.getElementById('map')
   #positions = $(container).data('positions')
   positions = gon.match.positions
-  heroes = (name for name of positions when name isnt 'tick')
+  heroes = (name for name of positions when name isnt 'time')
   dot_size = 5
 
   svg = d3.select("#map").append("svg")
@@ -32,15 +32,15 @@ window.DOTA2RAILS.matches.components.map = (() ->
   icon_container = svg.append("g")
 
   # positions map
-  update = (tick) ->
-    for val,idx in positions['tick']
-      break if val > tick
+  update = (time) ->
+    for pos,idx in positions['time']
+      break if pos > time
     data = []
     for h,i in heroes
       continue if idx > positions[h].length
       data.push {}
       $.extend(data[i], {name: h}, world_to_img positions[h][idx]...)
-    #console.log tick
+    #console.log time
 
     # DATA JOIN
     # TODO: use images instead of rectangles

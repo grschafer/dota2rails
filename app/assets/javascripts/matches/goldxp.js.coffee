@@ -44,22 +44,22 @@ window.DOTA2RAILS.matches.components.graph = (() ->
     for data_label in ['gold', 'xp']
       data = gon.match["#{data_label}_graph"]
       values = []
-      for tick,idx in data.tick
+      for time,idx in data.time
         c = 0
         r = 0
         d = 0
-        for hero,herodata of data when hero isnt 'tick'
+        for hero,herodata of data when hero isnt 'time'
           if c < 5
             r += if herodata[idx]? then herodata[idx] else herodata[herodata.length - 1]
           else
             d += if herodata[idx]? then herodata[idx] else herodata[herodata.length - 1]
           c++
-        values.push {'x': tick, 'y': r - d}
+        values.push {'x': time, 'y': r - d}
       dataset.push {key: data_label, color: (if data_label is 'gold' then 'blue' else 'green'), values: values}
     dataset
 
-  update = (tick) ->
-    line = line_home.selectAll("line").data([tick])
+  update = (time) ->
+    line = line_home.selectAll("line").data([time])
     line.transition()
         .attr("transform", (d,i) -> "translate(#{d} 0)")
         .ease('linear')
