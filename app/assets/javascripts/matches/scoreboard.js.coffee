@@ -35,22 +35,26 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
       .data(data[0..4])
     radcells = radrows.selectAll("td")
       .data((d) -> d)
+    radcells.attr("class", "") # clear stale item icons
+
     iconcells = radcells.filter((d) -> typeof d is "string" and (d.indexOf("npc_") is 0 or d.indexOf("item_") is 0))
     iconcells.attr("class", (d) -> "#{d}-icon")
-    othercells = radcells.filter((d) -> typeof d isnt "string" or (d.indexOf("npc_") isnt 0 and d.indexOf("item_") isnt 0))
-    othercells.classed("cell-change", (d) -> this.textContent isnt d and this.textContent isnt "#{d}")
-    othercells.text((d) -> d)
+    textcells = radcells.filter((d) -> typeof d isnt "string" or (d.indexOf("npc_") isnt 0 and d.indexOf("item_") isnt 0))
+    textcells.classed("cell-change", (d) -> this.textContent isnt "#{d}")
+    textcells.text((d) -> d)
 
     diretable = d3.select("#dire_players")
     direrows = diretable.selectAll("tr")
       .data(data[5..9])
     direcells = direrows.selectAll("td")
       .data((d) -> d)
+    direcells.attr("class", "") # clear stale item icons
+
     iconcells = direcells.filter((d) -> typeof d is "string" and (d.indexOf("npc_") is 0 or d.indexOf("item_") is 0))
     iconcells.attr("class", (d) -> "#{d}-icon")
-    othercells = direcells.filter((d) -> typeof d isnt "string" or (d.indexOf("npc_") isnt 0 and d.indexOf("item_") isnt 0))
-    othercells.classed("cell-change", (d) -> this.textContent isnt d and this.textContent isnt "#{d}")
-    othercells.text((d) -> d)
+    textcells = direcells.filter((d) -> typeof d isnt "string" or (d.indexOf("npc_") isnt 0 and d.indexOf("item_") isnt 0))
+    textcells.classed("cell-change", (d) -> this.textContent isnt "#{d}")
+    textcells.text((d) -> d)
     #direcells.classed("cell-change", (d) -> this.textContent isnt d and this.textContent isnt "#{d}")
 
   #timer_tick = scoreboards[2]['tick']
