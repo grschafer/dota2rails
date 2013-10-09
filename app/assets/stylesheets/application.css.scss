@@ -13,7 +13,9 @@
  * require_tree .
  *= require_self
  *= require nv.d3
- *= require_tree .
+ *= require small_hero_sheet
+ *= require small_item_sheet
+ * require_tree .
  */
 @import "bootstrap";
-//@import "matches";
+@import "matches";
