@@ -11,7 +11,8 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
   #scoreboards = $(container).data('scoreboards')
   #players = $(container).data('players')
   scoreboards = gon.match.scoreboards
-  players = gon.match.player_names
+  player_names = gon.match.player_names
+  player_teams = gon.match.player_teams
   #heroes = (name for name of positions when name isnt 'tick')
 
   #radrows.enter().append("tr")
@@ -23,16 +24,23 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
     for scoreboard,idx in scoreboards
       break if scoreboard['time'] > time
 
-    data = []
-    for hero,s of scoreboards[idx-1] when hero isnt 'time'
-      name = (name for name,h of players when h is hero)[0]
-      data.push [name, hero, s.l, s.k, s.d, s.a, s.i0, s.i1, s.i2, s.i3, s.i4, s.i5, s.g, s.lh, s.dn, s.gpm, s.xpm]
+    #data = []
+    #for hero,s of scoreboards[idx-1] when hero isnt 'time'
+      #name = (name for h,name of player_names when h is hero)[0]
+      #data.push [name, hero, s.l, s.k, s.d, s.a, s.i0, s.i1, s.i2, s.i3, s.i4, s.i5, s.g, s.lh, s.dn, s.gpm, s.xpm]
     #console.log time
+
+    data = {'radiant': [], 'dire': []}
+    for team,heroes of player_teams
+      for hero in heroes
+        s = scoreboards[idx-1][hero]
+        name = player_names[hero]
+        data[team].push [name, hero, s.l, s.k, s.d, s.a, s.i0, s.i1, s.i2, s.i3, s.i4, s.i5, s.g, s.lh, s.dn, s.gpm, s.xpm]
 
     # DATA JOIN
     radtable = d3.select("#radiant_players")
     radrows = radtable.selectAll("tr")
-      .data(data[0..4])
+      .data(data['radiant'])
     radcells = radrows.selectAll("td")
       .data((d) -> d)
     radcells.attr("class", "") # clear stale item icons
@@ -45,7 +53,7 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
 
     diretable = d3.select("#dire_players")
     direrows = diretable.selectAll("tr")
-      .data(data[5..9])
+      .data(data['dire'])
     direcells = direrows.selectAll("td")
       .data((d) -> d)
     direcells.attr("class", "") # clear stale item icons

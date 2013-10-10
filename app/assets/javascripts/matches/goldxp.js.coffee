@@ -43,17 +43,16 @@ window.DOTA2RAILS.matches.components.graph = (() ->
     dataset = []
     for data_label in ['gold', 'xp']
       data = gon.match["#{data_label}_graph"]
+      player_teams = gon.match.player_teams
       values = []
       for time,idx in data.time
-        c = 0
         r = 0
         d = 0
         for hero,herodata of data when hero isnt 'time'
-          if c < 5
+          if hero in player_teams['radiant']
             r += if herodata[idx]? then herodata[idx] else herodata[herodata.length - 1]
-          else
+          else if hero in player_teams['dire']
             d += if herodata[idx]? then herodata[idx] else herodata[herodata.length - 1]
-          c++
         values.push {'x': time, 'y': r - d}
       dataset.push {key: data_label, color: (if data_label is 'gold' then 'blue' else 'green'), values: values}
     dataset

@@ -17,7 +17,7 @@ ns.show = ->
   endTime = gon.match['positions']['time'][gon.match['positions']['time'].length - 1]
   time_interval = 5000 / 2
 
-  time = 300
+  time = gon.match['positions']['time'][0]
   update_wrapper = ->
     $('#time_slider').val(time);
     curTime.html(time);
