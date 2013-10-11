@@ -51,8 +51,8 @@ window.DOTA2RAILS.matches.components.map = (() ->
 
     # UPDATE
     rects.transition()
-        .attr("x", (d) -> d['x'])
-        .attr("y", (d) -> d['y'])
+        .attr("x", (d) -> d['x'] - 16) # subtract half of sprite width
+        .attr("y", (d) -> d['y'] - 16) # subtract half of sprite height
 
     # ENTER
     #rects.enter().append("rect")
