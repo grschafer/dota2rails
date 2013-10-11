@@ -14,8 +14,8 @@
 
 <br />
 
-<% [@match['players'][0..4], @match['players'][5..9]].each_with_index do |players, idx| %>
-  <h3><%= idx == 0 ? @match['radiant_name'] : @match['dire_name'] %></h3>
+<% [@match['radiant_name'], @match['dire_name']].each_with_index do |name, idx| %>
+  <h3><%= name %></h3>
   <table class="table table-condensed">
     <thead>
       <tr>
@@ -34,7 +34,7 @@
       </tr>
     </thead>
     <tbody id="<%= idx == 0 ? "radiant_players" : "dire_players" %>">
-      <% for player in players %>
+      <% 5.times do %>
         <tr>
           <td></td>
           <td></td>

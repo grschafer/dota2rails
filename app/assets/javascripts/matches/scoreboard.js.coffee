@@ -45,9 +45,9 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
       .data((d) -> d)
     radcells.attr("class", "") # clear stale item icons
 
-    iconcells = radcells.filter((d) -> typeof d is "string" and (d.indexOf("npc_") is 0 or d.indexOf("item_") is 0))
+    iconcells = radcells.filter((d,i) -> i == 1 or 6 <= i <= 11 )
     iconcells.attr("class", (d) -> "#{d}-icon")
-    textcells = radcells.filter((d) -> typeof d isnt "string" or (d.indexOf("npc_") isnt 0 and d.indexOf("item_") isnt 0))
+    textcells = radcells.filter((d,i) -> i != 1 and (i < 6 or i > 11))
     textcells.classed("cell-change", (d) -> this.textContent isnt "#{d}")
     textcells.text((d) -> d)
 
@@ -58,9 +58,9 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
       .data((d) -> d)
     direcells.attr("class", "") # clear stale item icons
 
-    iconcells = direcells.filter((d) -> typeof d is "string" and (d.indexOf("npc_") is 0 or d.indexOf("item_") is 0))
+    iconcells = direcells.filter((d,i) -> i == 1 or 6 <= i <= 11 )
     iconcells.attr("class", (d) -> "#{d}-icon")
-    textcells = direcells.filter((d) -> typeof d isnt "string" or (d.indexOf("npc_") isnt 0 and d.indexOf("item_") isnt 0))
+    textcells = direcells.filter((d,i) -> i != 1 and (i < 6 or i > 11))
     textcells.classed("cell-change", (d) -> this.textContent isnt "#{d}")
     textcells.text((d) -> d)
     #direcells.classed("cell-change", (d) -> this.textContent isnt d and this.textContent isnt "#{d}")

@@ -24,7 +24,7 @@ window.DOTA2RAILS.matches.components.eventlog = (() ->
       $(last_scrolled).css('background-color': $(scrollto_obj).css('background-color'))
       $(scrollto_obj).css('background-color': 'yellow')
       gapy = - $('#eventlog .event').eq(0).offset().top
-      console.log "#{gapy} + #{scrollto_obj.offsetTop} = #{gapy + scrollto_obj.offsetTop}"
+      #console.log "#{gapy} + #{scrollto_obj.offsetTop} = #{gapy + scrollto_obj.offsetTop}"
       $(eventlog).scrollTo(scrollto_obj, scrollto_obj, {
         gap: {y: gapy},
         animation: {duration: 2000}

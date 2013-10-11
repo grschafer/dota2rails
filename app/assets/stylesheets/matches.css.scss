@@ -7,7 +7,7 @@
 }
 
 /* blackout inventory cells */
-table > tbody > tr {
+/*table > tbody > tr {
   td:nth-child(7),
   td:nth-child(8),
   td:nth-child(9),
@@ -15,6 +15,6 @@ table > tbody > tr {
   td:nth-child(11),
   td:nth-child(12) {
     background-color: black;
-    /*-webkit-transform: scale(0.5,0.5);*/
+    /*-webkit-transform: scale(0.5,0.5);
   }
-}
+}*/

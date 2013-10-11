@@ -37,7 +37,7 @@ window.DOTA2RAILS.matches.components.map = (() ->
       break if pos > time
     data = []
     for h,i in heroes
-      continue if idx > positions[h].length
+      continue if idx > positions[h].length - 1
       data.push {}
       $.extend(data[i], {name: h}, world_to_img positions[h][idx]...)
     #console.log time
