@@ -10,12 +10,17 @@ window.DOTA2RAILS.matches.components.graph = (() ->
       id = '#chart'
       chart = nv.models.lineChart()
 
+      # http://stackoverflow.com/a/11287084/751774
+      formatTime = d3.time.format "%H:%M"
+      formatMinutes = (d) -> formatTime(new Date(2012, 0, 1, 0, d))
+
       chart.xAxis
         .axisLabel('Time')
-        .tickFormat(d3.format(',r'))
+        #.tickFormat(d3.format(',r'))
+        .tickFormat((d) -> "#{parseInt(d/60)}:#{if parseInt(d%60) is 0 then '00' else parseInt(d%60)}")
 
       chart.yAxis
-        .tickFormat(d3.format('.02f'))
+        .tickFormat(d3.format(',d'))
 
       d3.select("#{id} svg")
         .datum(gold_xp_data(id))
