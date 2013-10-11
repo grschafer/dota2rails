@@ -16,7 +16,7 @@
 
 <% [@match['players'][0..4], @match['players'][5..9]].each_with_index do |players, idx| %>
   <h3><%= idx == 0 ? @match['radiant_name'] : @match['dire_name'] %></h3>
-  <table class="table">
+  <table class="table table-condensed">
     <thead>
       <tr>
         <th>Player</th>
@@ -29,30 +29,30 @@
         <th>Gold</th>
         <th>LH</th>
         <th>D</th>
-        <th>Gold/Min</th>
-        <th>XP/Min</th>
+        <th>GPM</th>
+        <th>XPM</th>
       </tr>
     </thead>
     <tbody id="<%= idx == 0 ? "radiant_players" : "dire_players" %>">
       <% for player in players %>
         <tr>
-          <td><%= player['account_id'] %></td>
-          <td><%= player['level'] %></td>
-          <td><%= player['hero_id'] %></td>
-          <td><%= player['kills'] %></td>
-          <td><%= player['deaths'] %></td>
-          <td><%= player['assists'] %></td>
-          <td><%= player['item_0'] %></td>
-          <td><%= player['item_1'] %></td>
-          <td><%= player['item_2'] %></td>
-          <td><%= player['item_3'] %></td>
-          <td><%= player['item_4'] %></td>
-          <td><%= player['item_5'] %></td>
-          <td><%= player['gold'] %></td>
-          <td><%= player['last_hits'] %></td>
-          <td><%= player['denies'] %></td>
-          <td><%= player['gold_per_min'] %></td>
-          <td><%= player['xp_per_min'] %></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
         </tr>
       <% end %>
     </tbody>
