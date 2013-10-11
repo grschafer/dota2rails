@@ -14,14 +14,33 @@ ns.show = ->
     # or can use events?
 
   curTime = $('#curTime')
+  startTime = gon.match['positions']['time'][0]
   endTime = gon.match['positions']['time'][gon.match['positions']['time'].length - 1]
   time_interval = 5000 / 2
 
-  time = gon.match['positions']['time'][0]
+  sec_to_hms = (time) ->
+    h = parseInt(time / 3600)
+    h = if h is 0 then "" else "#{h}:"
+    m = parseInt(parseInt(time % 3600) / 60)
+    m = if m < 10 then "0#{m}" else m
+    s = parseInt(time % 60)
+    s = if s < 10 then "0#{s}" else s
+    "#{h}#{m}:#{s}"
+
+  gameDuration = sec_to_hms(endTime - startTime)
+  update_time_label = () ->
+    gameTime = time - startTime
+    curTime.html("#{sec_to_hms(gameTime)} / #{gameDuration}")
+    slider= $('#time_slider')
+    scale = slider.width() / (endTime - startTime)
+    leftOffset = gameTime * scale - 42 # 42 is half-width of text "01:23 / 45:67"
+    curTime.css('left', leftOffset)
+
+  time = startTime
   update_wrapper = ->
     $('#time_slider').val(time);
-    curTime.html(time);
-    console.log time
+    update_time_label()
+    #console.log time
     for _,component of ns.components
       #data = component.prep_data(match)
       component.update(time)
@@ -36,7 +55,7 @@ ns.show = ->
 
   $('#time_slider').change ->
     time = parseInt($(this).val())
-    curTime.html(time)
+    update_time_label()
     update_wrapper()
 
     if play_btn_state is 'playing'

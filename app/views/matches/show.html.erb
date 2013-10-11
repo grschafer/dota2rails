@@ -1,14 +1,16 @@
 <p id="notice"><%= notice %></p>
 
 <div class="row">
-  <div class="col-xs-8">
+  <div class="col-xs-1"></div>
+  <div class="col-xs-7">
     <%= render partial: 'playback_slider',
         locals: {start_time: @match['positions']['time'][0],
                  end_time: @match['positions']['time'][-1]} %>
   </div>
-  <div class="col-xs-4">
+  <div class="col-xs-3">
     <%= render 'playback_controls' %>
   </div>
+  <div class="col-xs-1"></div>
 </div>
 <div class="row">
   <%#<div class="col-lg-5">%>
