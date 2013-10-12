@@ -39,24 +39,33 @@ window.DOTA2RAILS.matches.components.map = (() ->
     for h,i in heroes
       continue if idx > positions[h].length - 1
       data.push {}
-      $.extend(data[i], {name: h}, world_to_img positions[h][idx]...)
+      pos = world_to_img positions[h][idx][0], positions[h][idx][1]
+      team = if h in gon.match.player_teams['radiant'] then 'radiant' else 'dire'
+      $.extend(data[i], {name: h, team: team, hp: positions[h][idx][2]}, )
     #console.log time
 
     # DATA JOIN
     # TODO: use images instead of rectangles
-    #rects = svg.selectAll("rect")
+    #hero_icons = svg.selectAll("rect")
     #  .data(data, (d) -> d.name)
-    rects = icon_container.selectAll("image")
+    hero_icons = icon_container.selectAll("image")
+      .data(data, (d) -> d.name)
+    hp_bars = icon_container.selectAll("rect")
       .data(data, (d) -> d.name)
 
     # UPDATE
-    rects.transition()
+    hero_icons.transition()
         .attr("x", (d) -> d['x'] - 16) # subtract half of sprite width
         .attr("y", (d) -> d['y'] - 16) # subtract half of sprite height
+        .classed('desaturate', (d) -> d['hp'] <= 0)
+    hp_bars.transition()
+        .attr("x", (d) -> d['x'] - 16) # subtract half of sprite width
+        .attr("y", (d) -> d['y'] + 18) # subtract half of sprite height
+        .attr("width", (d) -> d['hp'] / 100 * 32)
 
     # ENTER
-    #rects.enter().append("rect")
-    rects.enter().append("svg:image")
+    #hero_icons.enter().append("rect")
+    hero_icons.enter().append("svg:image")
         .attr("x", (d) -> d['x'])
         .attr("y", (d) -> d['y'])
         #.attr("width", 5)
@@ -66,11 +75,16 @@ window.DOTA2RAILS.matches.components.map = (() ->
         .attr("xlink:href", (d) -> "/assets/miniheroes/#{d['name'].substring(14)}.png")
         #.attr("viewBox", "0 0 32 32")
         #.style("fill", (d, i) -> colors[i])
+    hp_bars.enter().append("rect")
+        .attr("x", (d) -> d['x'] - 16) # subtract half of sprite width
+        .attr("y", (d) -> d['y'] + 18) # subtract half of sprite height
+        .attr("fill", (d) -> if team is "radiant" then "green" else "red")
+        .attr("width", (d) -> d['hp'] / 100 * 32)
 
     # ENTER + UPDATE
 
     # EXIT
-    rects.exit().remove()
+    hero_icons.exit().remove()
 
   #timer_tick = positions['tick'][0]
   #update_wrapper = ->
