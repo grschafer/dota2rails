@@ -41,7 +41,7 @@ window.DOTA2RAILS.matches.components.map = (() ->
       data.push {}
       pos = world_to_img positions[h][idx][0], positions[h][idx][1]
       team = if h in gon.match.player_teams['radiant'] then 'radiant' else 'dire'
-      $.extend(data[i], {name: h, team: team, hp: positions[h][idx][2]}, )
+      $.extend(data[i], {name: h, team: team, hp: positions[h][idx][2]}, pos)
     #console.log time
 
     # DATA JOIN
@@ -57,17 +57,17 @@ window.DOTA2RAILS.matches.components.map = (() ->
     hero_icons.transition()
         .attr("x", (d) -> d['x'] - 16) # subtract half of sprite width
         .attr("y", (d) -> d['y'] - 16) # subtract half of sprite height
-        .classed('desaturate', (d) -> d['hp'] <= 0)
+    hero_icons.classed('desaturate', (d) -> d['hp'] <= 0)
     hp_bars.transition()
+        .attr("width", (d) -> d['hp'] / 100 * 32)
         .attr("x", (d) -> d['x'] - 16) # subtract half of sprite width
         .attr("y", (d) -> d['y'] + 18) # subtract half of sprite height
-        .attr("width", (d) -> d['hp'] / 100 * 32)
 
     # ENTER
     #hero_icons.enter().append("rect")
     hero_icons.enter().append("svg:image")
-        .attr("x", (d) -> d['x'])
-        .attr("y", (d) -> d['y'])
+        .attr("x", (d) -> d['x'] - 16) # subtract half of sprite width
+        .attr("y", (d) -> d['y'] - 16) # subtract half of sprite height
         #.attr("width", 5)
         #.attr("height", 5)
         .attr("width", 32)
@@ -76,15 +76,17 @@ window.DOTA2RAILS.matches.components.map = (() ->
         #.attr("viewBox", "0 0 32 32")
         #.style("fill", (d, i) -> colors[i])
     hp_bars.enter().append("rect")
+        .attr("fill", (d) -> if d['team'] is "radiant" then "rgba(0,255,0,0.5)" else "rgba(255,0,0,0.5)")
+        .attr("height", 2)
+        .attr("width", (d) -> d['hp'] / 100 * 32)
         .attr("x", (d) -> d['x'] - 16) # subtract half of sprite width
         .attr("y", (d) -> d['y'] + 18) # subtract half of sprite height
-        .attr("fill", (d) -> if team is "radiant" then "green" else "red")
-        .attr("width", (d) -> d['hp'] / 100 * 32)
 
     # ENTER + UPDATE
 
     # EXIT
     hero_icons.exit().remove()
+    #hp_bars.exit().remove()
 
   #timer_tick = positions['tick'][0]
   #update_wrapper = ->

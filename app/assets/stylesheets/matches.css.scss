@@ -19,8 +19,9 @@
   }
 }*/
 
+/* filter must be included in the page for this to work? see views/matches/show.html.erb */
 .desaturate {
-  filter: url(filters.svg#grayscale); /* Firefox 3.5+ */
+  filter: url(#grayscale); /* Firefox 3.5+ */
   filter: gray; /* IE6-9 */
   -webkit-filter: grayscale(1); /* Google Chrome, Safari 6+ & Opera 15+ */
 }
