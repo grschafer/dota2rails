@@ -73,7 +73,11 @@ window.DOTA2RAILS.matches.components.map = (() ->
         #.attr("height", 5)
         .attr("width", 32)
         .attr("height", 32)
-        .attr("xlink:href", (d) -> "/assets/miniheroes/#{d['name'].substring(14)}.png")
+        # changed this because asset path fingerprinting means I don't know
+        # what the image file's name is in production
+        # so, the image paths are written into the bottom of the html page
+        #.attr("xlink:href", (d) -> "/assets/miniheroes/#{d['name'].substring(14)}.png")
+        .attr("xlink:href", (d) -> window.DOTA2RAILS.matches.heroiconpaths[d.name])
         #.attr("viewBox", "0 0 32 32")
         #.style("fill", (d, i) -> colors[i])
     hp_bars.enter().append("rect")

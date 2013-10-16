@@ -1,10 +1,15 @@
 # implements dom-ready execution
 # http://viget.com/inspire/extending-paul-irishs-comprehensive-dom-ready-execution
 
-window.DOTA2RAILS =
-  common: {}
-  matches:
-    components: {} # map, scoreboard, eventlog, graph components add to this
+#window.DOTA2RAILS =
+#  common: {}
+#  matches:
+#    components: {} # map, scoreboard, eventlog, graph components add to this
+
+window.DOTA2RAILS ||= {}
+window.DOTA2RAILS.common ||= {}
+window.DOTA2RAILS.matches ||= {}
+window.DOTA2RAILS.matches.components ||= {}
 
 UTIL =
   exec: (controller, action) ->
