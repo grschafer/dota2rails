@@ -13,6 +13,7 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
   scoreboards = gon.match.scoreboards
   player_names = gon.match.player_names
   player_teams = gon.match.player_teams
+  last_update_idx = null
   #heroes = (name for name of positions when name isnt 'tick')
 
   #radrows.enter().append("tr")
@@ -23,6 +24,11 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
   update = (time) ->
     for scoreboard,idx in scoreboards
       break if scoreboard['time'] > time
+
+    # don't update scoreboard if we're not showing new data
+    # TODO: should this instead be controlled by a separate timer in matches/init.js.coffee?
+    return if idx is last_update_idx
+    last_update_idx = idx
 
     #data = []
     #for hero,s of scoreboards[idx-1] when hero isnt 'time'
@@ -45,6 +51,7 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
       .data((d) -> d)
     radcells.attr("class", "") # clear stale item icons
 
+    # iconcells (hero and items) are in columns 1 and 6-11 of the table
     iconcells = radcells.filter((d,i) -> i == 1 or 6 <= i <= 11 )
     iconcells.attr("class", (d) -> "#{d}-icon")
     textcells = radcells.filter((d,i) -> i != 1 and (i < 6 or i > 11))

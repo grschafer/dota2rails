@@ -32,7 +32,7 @@ window.DOTA2RAILS.matches.components.map = (() ->
   icon_container = svg.append("g")
 
   # positions map
-  update = (time) ->
+  update = (time, time_interval) ->
     for pos,idx in positions['time']
       break if pos > time
     data = []
@@ -45,7 +45,8 @@ window.DOTA2RAILS.matches.components.map = (() ->
     #console.log time
 
     # DATA JOIN
-    # TODO: use images instead of rectangles
+    # TODO: group icons and hp_bars under parent element (g)
+    #       and apply update movements to that single element
     #hero_icons = svg.selectAll("rect")
     #  .data(data, (d) -> d.name)
     hero_icons = icon_container.selectAll("image")
@@ -54,11 +55,11 @@ window.DOTA2RAILS.matches.components.map = (() ->
       .data(data, (d) -> d.name)
 
     # UPDATE
-    hero_icons.transition()
+    hero_icons.transition().duration(time_interval).ease(d3.ease('linear'))
         .attr("x", (d) -> d['x'] - 16) # subtract half of sprite width
         .attr("y", (d) -> d['y'] - 16) # subtract half of sprite height
     hero_icons.classed('desaturate', (d) -> d['hp'] <= 0)
-    hp_bars.transition()
+    hp_bars.transition().duration(time_interval).ease(d3.ease('linear'))
         .attr("width", (d) -> d['hp'] / 100 * 32)
         .attr("x", (d) -> d['x'] - 16) # subtract half of sprite width
         .attr("y", (d) -> d['y'] + 18) # subtract half of sprite height
