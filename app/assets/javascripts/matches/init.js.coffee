@@ -2,9 +2,19 @@
 # synchronizing with time slider,
 # and updating the components (map, scoreboard, eventlog, graphs)
 
-window.DOTA2RAILS.matches.init = ->
-  # convert each component js into an object (with init and update functions)
-  # will I need to define load order in application.js?
+ns = window.DOTA2RAILS.matches
+ns.init = ->
+
+  # http://stackoverflow.com/a/11287084/751774
+  # converts seconds (2347) to [H:]M:S (39:07)
+  formatMin = d3.time.format "%M:%S"
+  formatHour = d3.time.format "%H:%M:%S"
+  formatTime = (d) ->
+    if d > 3600
+      formatHour(new Date(2012, 0, 1, 0, 0, d))
+    else
+      formatMin(new Date(2012, 0, 1, 0, 0, d))
+  ns.utils.formatTime = formatTime
 
 # break out into show.js.coffee?
 ns = window.DOTA2RAILS.matches
@@ -13,6 +23,9 @@ ns.show = ->
   # set interval, slider controls
   # send update func calls to components
     # or can use events?
+  for _,component of ns.components
+    if component.hasOwnProperty('init')
+      component.init()
 
   curTime = $('#curTime')
   startTime = gon.match['positions']['time'][0]
@@ -20,19 +33,10 @@ ns.show = ->
   time_interval = 1000 / 2 # interval at which to update all components by the time_delta
   time_delta = 1 # how much ingame time to add (in seconds)
 
-  sec_to_hms = (time) ->
-    h = parseInt(time / 3600)
-    h = if h is 0 then "" else "#{h}:"
-    m = parseInt(parseInt(time % 3600) / 60)
-    m = if m < 10 then "0#{m}" else m
-    s = parseInt(time % 60)
-    s = if s < 10 then "0#{s}" else s
-    "#{h}#{m}:#{s}"
-
-  gameDuration = sec_to_hms(endTime - startTime)
+  gameDuration = ns.utils.formatTime(endTime - startTime)
   update_time_label = () ->
     gameTime = time - startTime
-    curTime.html("#{sec_to_hms(gameTime)} / #{gameDuration}")
+    curTime.html("#{ns.utils.formatTime(gameTime)} / #{gameDuration}")
     slider= $('#time_slider')
     scale = slider.width() / (endTime - startTime)
     leftOffset = gameTime * scale - 42 # 42 is half-width of text "01:23 / 45:67"

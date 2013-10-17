@@ -4,22 +4,15 @@
 
 # TODO: DRY UP ANALYSIS JAVASCRIPT FILES (PULL OUT HELPER/UTILITY STUFF)
 window.DOTA2RAILS.matches.components.scoreboard = (() ->
-  # dota player colors
-  colors = ["rgba(39, 105, 229, 1)", "rgba(92, 229, 172, 1)", "rgba(172, 0, 172, 1)", "rgba(219, 216, 9, 1)", "rgba(229, 97, 0, 1)", "rgba(229, 121, 175, 1)", "rgba(145, 163, 63, 1)", "rgba(91, 196, 223, 1)", "rgba(0, 118, 30, 1)", "rgba(148, 95, 0, 1)"];
 
-  container = document.getElementById('scoreboard')
-  #scoreboards = $(container).data('scoreboards')
-  #players = $(container).data('players')
-  scoreboards = gon.match.scoreboards
-  player_names = gon.match.player_names
-  player_teams = gon.match.player_teams
-  last_update_idx = null
-  #heroes = (name for name of positions when name isnt 'tick')
+  # we want these variables to persist between init and update funcs
+  scoreboards = player_names = player_teams = last_update_idx = null
 
-  #radrows.enter().append("tr")
-    #.attr("xlink:href", (d) -> d)
-    #.attr("width", mapw)
-    #.attr("height", maph)
+  init = ->
+    scoreboards = gon.match.scoreboards
+    player_names = gon.match.player_names
+    player_teams = gon.match.player_teams
+    last_update_idx = null
 
   update = (time) ->
     for scoreboard,idx in scoreboards
@@ -86,5 +79,5 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
     #clearInterval(timer) if idx is scoreboards.length - 1
     #update timer_tick, data
   #timer = setInterval update_wrapper, 3000
-  {update: update}
+  {init: init, update: update}
 )()

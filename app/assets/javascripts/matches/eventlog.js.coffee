@@ -4,9 +4,13 @@
 
 # TODO: DRY UP ANALYSIS JAVASCRIPT FILES (PULL OUT HELPER/UTILITY STUFF)
 window.DOTA2RAILS.matches.components.eventlog = (() ->
-  eventlog = document.getElementById 'eventlog'
+  # we want these variables to persist between init and update funcs
+  eventlog = last_scrolled = null
 
-  last_scrolled = null
+  init = ->
+    eventlog = document.getElementById 'eventlog'
+    last_scrolled = null
+
   update = (time) ->
     #console.log time
 
@@ -37,5 +41,5 @@ window.DOTA2RAILS.matches.components.eventlog = (() ->
     #clearInterval(timer) if timer_tick > 63000
     #update timer_tick
   #timer = setInterval update_wrapper, 200
-  {update: update}
+  {init: init, update: update}
 )()

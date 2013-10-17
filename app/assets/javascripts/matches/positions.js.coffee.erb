@@ -11,25 +11,22 @@ window.DOTA2RAILS.matches.components.map = (() ->
   mapw = 600
   maph = 580
 
-  # dota player colors
-  colors = ["rgba(39, 105, 229, 1)", "rgba(92, 229, 172, 1)", "rgba(172, 0, 172, 1)", "rgba(219, 216, 9, 1)", "rgba(229, 97, 0, 1)", "rgba(229, 121, 175, 1)", "rgba(145, 163, 63, 1)", "rgba(91, 196, 223, 1)", "rgba(0, 118, 30, 1)", "rgba(148, 95, 0, 1)"];
+  # we want these variables to persist between init and update funcs
+  positions = heroes = svg = icon_container = null
 
-  curtime = 0
-  container = document.getElementById('map')
-  #positions = $(container).data('positions')
-  positions = gon.match.positions
-  heroes = (name for name of positions when name isnt 'time')
-  dot_size = 5
+  init = ->
+    positions = gon.match.positions
+    heroes = (name for name of positions when name isnt 'time')
 
-  svg = d3.select("#map").append("svg")
+    svg = d3.select("#map").append("svg")
+        .attr("width", mapw)
+        .attr("height", maph)
+    imgs = svg.selectAll("image").data([mapfile])
+    imgs.enter().append("svg:image")
+      .attr("xlink:href", (d) -> d)
       .attr("width", mapw)
       .attr("height", maph)
-  imgs = svg.selectAll("image").data([mapfile])
-  imgs.enter().append("svg:image")
-    .attr("xlink:href", (d) -> d)
-    .attr("width", mapw)
-    .attr("height", maph)
-  icon_container = svg.append("g")
+    icon_container = svg.append("g")
 
   # positions map
   update = (time, time_interval) ->
@@ -99,5 +96,5 @@ window.DOTA2RAILS.matches.components.map = (() ->
     #clearInterval(timer) if data.length is 0
     #update timer_tick, data
   #timer = setInterval update_wrapper, 100
-  {update: update}
+  {init: init, update: update}
 )()
