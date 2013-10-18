@@ -3,20 +3,4 @@
 <% eventlog.sort! { |x,y| x['time'] <=> y['time'] } %>
 
 <div id="eventlog" class="container" style="float: left; width: 600px; height:200px; overflow-y:scroll;">
-<% for evt in eventlog %>
-  <div class="row">
-    <%= content_tag "div", class: "event col-md-12", data: {time: evt['time']} do %>
-      <%= "#{evt['rune_type']} rune spawned" if evt['event'] == 'rune_spawn' %>
-      <%= "#{evt['rune_type']} rune bottled by #{evt['hero']}" if evt['event'] == 'rune_bottle' %>
-      <%= "#{evt['rune_type']} rune used by #{evt['hero']}" if evt['event'] == 'rune_pickup' %>
-      <%= "#{evt['team']} killed Roshan" if evt['event'] == 'roshan_kill' %>
-      <%= "#{evt['hero']} picked up aegis" if evt['event'] == 'aegis_pickup' %>
-      <%= "#{evt['hero']} denied the aegis" if evt['event'] == 'aegis_denied' %>
-      <%= "#{evt['hero']} stole the aegis" if evt['event'] == 'aegis_stolen' %>
-      <%= "#{evt['hero']} bought back for #{evt['cost']} gold" if evt['event'] == 'buyback' %>
-      <%= "#{evt['hero']} killed by #{evt['killers'].map(&:first).join(', ')}, giving up #{evt['bounty_gold']} gold, #{evt['bounty_xp']} xp" if evt['event'] == 'kill' %>
-      <%= "#{evt['hero']} denied by #{evt['killers'].map(&:first).join(', ')}" if evt['event'] == 'deny' %>
-    <% end %>
-  </div>
-<% end %>
 </div>
