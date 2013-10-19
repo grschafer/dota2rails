@@ -59,14 +59,10 @@ window.DOTA2RAILS.matches.components.eventlog = (() ->
     # fadeout highlight over 30 in-game seconds
     # hsl(50,1,0.5).brighter(x) turns to white between x=1.9 and x=2
     #events.filter((d) -> this.style.backgroundColor isnt "rgb(255,255,255)")
-    events.style('background-color', (d) -> d3.hsl(50, 1, 0.5).brighter((time - d.time) / 15))
 
     # add new events to the top of the eventlog div
     new_event = events.enter().insert('p', ":first-child")
-      #.style('background-color', 'yellow')
-    #new_event.transition()
-    #  .duration(15000)
-    #  .style('background-color', 'white')
+    events.style('background-color', (d) -> d3.hsl(50, 1, 0.5).brighter((time - d.time) / 15))
     new_event.append('small')
       .text((d) -> window.DOTA2RAILS.matches.utils.formatTime(d.time))
       .style('padding-right', '2em')
