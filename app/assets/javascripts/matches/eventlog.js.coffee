@@ -46,25 +46,30 @@ window.DOTA2RAILS.matches.components.eventlog = (() ->
     # eventual transition animation
 
     # TODO: INEFFICIENT!!
+    # use d3.binary_search then slice (instead of filter)
     cur_events = eventlist.filter((x) -> time > x.time)
 
     eventlog = d3.select('#eventlog')
     # NOTE: (d.event + d.time) may not be enough to ensure uniqueness
     #   ie - somebody could kill 2 heroes at the exact same time
     events = eventlog.selectAll('p')
-        .data(cur_events, (d) -> d.event + d.time)
+      .data(cur_events, (d) -> d.event + d.time)
 
-    events.style('background-color', (d) ->
-      if time - d.time < 30
-        'yellow'
-      else
-        'inherit'
-    )
+    # TODO: probably inefficient
+    # fadeout highlight over 30 in-game seconds
+    # hsl(50,1,0.5).brighter(x) turns to white between x=1.9 and x=2
+    #events.filter((d) -> this.style.backgroundColor isnt "rgb(255,255,255)")
+    events.style('background-color', (d) -> d3.hsl(50, 1, 0.5).brighter((time - d.time) / 15))
 
+    # add new events to the top of the eventlog div
     new_event = events.enter().insert('p', ":first-child")
+      #.style('background-color', 'yellow')
+    #new_event.transition()
+    #  .duration(15000)
+    #  .style('background-color', 'white')
     new_event.append('small')
-        .text((d) -> window.DOTA2RAILS.matches.utils.formatTime(d.time))
-        .style('padding-right', '2em')
+      .text((d) -> window.DOTA2RAILS.matches.utils.formatTime(d.time))
+      .style('padding-right', '2em')
     new_event.append('span').html((d) -> "#{format_event(d)}")
 
     events.exit().remove()
