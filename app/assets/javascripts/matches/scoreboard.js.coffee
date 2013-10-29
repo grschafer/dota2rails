@@ -36,17 +36,29 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
         name = player_names[hero]
         data[team].push [name, hero, s.l, s.k, s.d, s.a, s.i0, s.i1, s.i2, s.i3, s.i4, s.i5, s.g, s.lh, s.dn, s.gpm, s.xpm]
 
+      # sum levels, kills, deaths, assists, gold, last hits, denies
+      summable_cols = [2,3,4,5,12,13,14]
+      # average gpm, xpm
+      avg_cols = [15,16]
+
+      total_row = ['Total/Avg']
+      for i in summable_cols
+        total_row[i] = data[team].reduce(((sum,row) -> sum + row[i]), 0)
+      for i in avg_cols
+        total_row[i] = data[team].reduce(((sum,row) -> sum + row[i]), 0) / data[team].length
+      console.log total_row
+      data[team].push total_row
+
     # DATA JOIN
     radtable = d3.select("#radiant_players")
     radrows = radtable.selectAll("tr")
       .data(data['radiant'])
     radcells = radrows.selectAll("td")
       .data((d) -> d)
-    radcells.attr("class", "") # clear stale item icons
 
     # iconcells (hero and items) are in columns 1 and 6-11 of the table
     iconcells = radcells.filter((d,i) -> i == 1 or 6 <= i <= 11 )
-    iconcells.attr("class", (d) -> "#{d}-icon")
+    iconcells.attr("class", (d) -> if (d? and d isnt 0) then "#{d}-icon" else "")
     textcells = radcells.filter((d,i) -> i != 1 and (i < 6 or i > 11))
     textcells.classed("cell-change", (d) -> this.textContent isnt "#{d}")
     textcells.text((d) -> d)
@@ -56,10 +68,9 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
       .data(data['dire'])
     direcells = direrows.selectAll("td")
       .data((d) -> d)
-    direcells.attr("class", "") # clear stale item icons
 
     iconcells = direcells.filter((d,i) -> i == 1 or 6 <= i <= 11 )
-    iconcells.attr("class", (d) -> "#{d}-icon")
+    iconcells.attr("class", (d) -> if (d? and d isnt 0) then "#{d}-icon" else "")
     textcells = direcells.filter((d,i) -> i != 1 and (i < 6 or i > 11))
     textcells.classed("cell-change", (d) -> this.textContent isnt "#{d}")
     textcells.text((d) -> d)

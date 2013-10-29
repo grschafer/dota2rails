@@ -56,7 +56,7 @@ window.DOTA2RAILS.matches.components.map = (() ->
         .attr("x", (d) -> d['x'] - 16) # subtract half of sprite width
         .attr("y", (d) -> d['y'] - 16) # subtract half of sprite height
     hero_icons.classed('desaturate', (d) -> d['hp'] <= 0)
-    hp_bars.transition().duration(time_interval).ease(d3.ease('linear'))
+    hp_bars
         .attr("width", (d) -> d['hp'] / 100 * 32)
         .attr("x", (d) -> d['x'] - 16) # subtract half of sprite width
         .attr("y", (d) -> d['y'] + 18) # subtract half of sprite height
