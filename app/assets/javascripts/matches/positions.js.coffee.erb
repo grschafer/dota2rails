@@ -5,6 +5,13 @@
 # TODO: DRY UP ANALYSIS JAVASCRIPT FILES (PULL OUT HELPER/UTILITY STUFF)
 window.DOTA2RAILS.matches.components.map = (() ->
   mapfile = "<%= asset_path 'dota_gray_blur_600x580.jpg' %>"
+  rune_files = {
+    'invis': "<%= asset_path 'runes/invis.png' %>",
+    'haste': "<%= asset_path 'runes/haste.png' %>",
+    'illusion': "<%= asset_path 'runes/illusion.png' %>",
+    'doubledamage': "<%= asset_path 'runes/doubledamage.png' %>",
+    'regen': "<%= asset_path 'runes/regen.png' %>",
+  }
   world_to_img = (x,y) ->
     x: (8576.0 + x) * 0.0366 + -12.4219,
     y: (8192.0 - y) * 0.0367 + -1.2082
@@ -12,11 +19,19 @@ window.DOTA2RAILS.matches.components.map = (() ->
   maph = 580
 
   # we want these variables to persist between init and update funcs
-  positions = heroes = svg = icon_container = null
+  positions = heroes = svg = null
+  rune_container = null
+  rax_container = null
+  tower_container = null
+  ancient_container = null
+  hero_container = null
+  runes = null
 
   init = ->
     positions = gon.match.positions
     heroes = (name for name of positions when name isnt 'time')
+
+    runes = gon.match.runes
 
     svg = d3.select("#map").append("svg")
         .attr("width", mapw)
@@ -26,10 +41,16 @@ window.DOTA2RAILS.matches.components.map = (() ->
       .attr("xlink:href", (d) -> d)
       .attr("width", mapw)
       .attr("height", maph)
-    icon_container = svg.append("g")
+    rune_container = svg.append("g")
+    rax_container = svg.append("g")
+    tower_container = svg.append("g")
+    ancient_container = svg.append("g")
+    hero_container = svg.append("g")
 
   # positions map
   update = (time, time_interval) ->
+
+    # hero position/hp data
     for pos,idx in positions['time']
       break if pos > time
     data = []
@@ -39,27 +60,38 @@ window.DOTA2RAILS.matches.components.map = (() ->
       pos = world_to_img positions[h][idx][0], positions[h][idx][1]
       team = if h in gon.match.player_teams['radiant'] then 'radiant' else 'dire'
       $.extend(data[i], {name: h, team: team, hp: positions[h][idx][2]}, pos)
-    #console.log time
+
+    # rune data
+    for pos,idx in runes
+      break if pos.time > time
+    rune_data = []
+    if idx > 0 and runes[idx - 1].event is "rune_spawn"
+      r = runes[idx - 1]
+      rune_data = [{}]
+      pos = world_to_img r.x, r.y
+      $.extend(rune_data[0], {'rune_type': r.rune_type}, pos)
 
     # DATA JOIN
     # TODO: group icons and hp_bars under parent element (g)
     #       and apply update movements to that single element
     #hero_icons = svg.selectAll("rect")
     #  .data(data, (d) -> d.name)
-    hero_icons = icon_container.selectAll("image")
+    hero_icons = hero_container.selectAll("image")
       .data(data, (d) -> d.name)
-    hp_bars = icon_container.selectAll("rect")
+    hp_bars = hero_container.selectAll("rect")
       .data(data, (d) -> d.name)
+    rune_icons = rune_container.selectAll("image")
+      .data(rune_data)
 
     # UPDATE
     hero_icons.transition().duration(time_interval).ease(d3.ease('linear'))
         .attr("x", (d) -> d['x'] - 16) # subtract half of sprite width
         .attr("y", (d) -> d['y'] - 16) # subtract half of sprite height
     hero_icons.classed('desaturate', (d) -> d['hp'] <= 0)
-    hp_bars
-        .attr("width", (d) -> d['hp'] / 100 * 32)
+    hp_bars.attr("width", (d) -> d['hp'] / 100 * 32)
+    hp_bars.transition().duration(time_interval).ease(d3.ease('linear'))
         .attr("x", (d) -> d['x'] - 16) # subtract half of sprite width
-        .attr("y", (d) -> d['y'] + 18) # subtract half of sprite height
+        .attr("y", (d) -> d['y'] + 18) # show bar 2 px below bottom of sprite
 
     # ENTER
     #hero_icons.enter().append("rect")
@@ -83,12 +115,20 @@ window.DOTA2RAILS.matches.components.map = (() ->
         .attr("width", (d) -> d['hp'] / 100 * 32)
         .attr("x", (d) -> d['x'] - 16) # subtract half of sprite width
         .attr("y", (d) -> d['y'] + 18) # subtract half of sprite height
+    rune_icons.enter().append("image")
+        .attr("xlink:href", (d) -> rune_files[d.rune_type])
+        .attr("x", (d) -> d.x - 16)
+        .attr("y", (d) -> d.y - 16)
+        .attr("width", 32)
+        .attr("height", 32)
+
 
     # ENTER + UPDATE
 
     # EXIT
     hero_icons.exit().remove()
     #hp_bars.exit().remove()
+    rune_icons.exit().remove()
 
   #timer_tick = positions['tick'][0]
   #update_wrapper = ->

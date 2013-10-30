@@ -46,7 +46,6 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
         total_row[i] = data[team].reduce(((sum,row) -> sum + row[i]), 0)
       for i in avg_cols
         total_row[i] = data[team].reduce(((sum,row) -> sum + row[i]), 0) / data[team].length
-      console.log total_row
       data[team].push total_row
 
     # DATA JOIN
