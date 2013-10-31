@@ -89,11 +89,16 @@ window.DOTA2RAILS.matches.components.map = (() ->
       pos = world_to_img r.x, r.y
       $.extend(rune_data[0], {'rune_type': r.rune_type}, pos)
 
+    # TODO: optimization: have a queue of all building hp changes (sorted by time) and only
+    #   make the bldg_data structure if the position (current time) in the queue changes?
     # building data
     bldg_data = []
+    bldg_destroyed = []
     for name,threshtimes of bldg_hp
-      # if the building isn't destroyed
-      if threshtimes.length is 0 or (threshtimes[threshtimes.length - 1].hp is 0 and threshtimes[threshtimes.length - 1].time > time)
+      # if the building is destroyed then mark it, else get the info to draw it and its hp bar
+      if threshtimes.length > 0 and threshtimes[threshtimes.length - 1].hp is 0 and threshtimes[threshtimes.length - 1].time < time
+        bldg_destroyed.push name
+      else
         for threshold,idx in threshtimes
           if threshold.time > time
             break
@@ -110,6 +115,37 @@ window.DOTA2RAILS.matches.components.map = (() ->
     bldg_data.sort((a,b) -> if a.y < b.y then -1 else (if a.y > b.y then 1 else 0))
 
     # filter bldg_data to a diff list for bldg_hpbars
+    # TODO: please refactor me... so slow and bad  :'(
+    isVulnerable = (bldg) ->
+      get_num = /(\d)/
+      team_name = if bldg.team is "radiant" then "goodguys" else "badguys"
+      tower4_regex = new RegExp(team_name + "_tower3") # match any tower3
+      lane = bldg.name.substr(bldg.name.length - 3)
+      tower3_regex = new RegExp(team_name + "_tower3_" + lane) # match tower3 in same lane
+      ancient_regex = new RegExp(team_name + "_tower4") # match any tower4
+      switch bldg.type
+        when "tower"
+          if bldg.name.indexOf("1") isnt -1
+            return true
+          else
+            tower_num = parseInt(bldg.name[bldg.name.search(get_num)])
+            if tower_num is 4
+              # return true if any tower3 of the same team is in the destroyed list
+              return (bldg_destroyed.filter((name) -> tower4_regex.test(name)).length > 0)
+            else
+              check_tower = bldg.name.replace(tower_num, tower_num - 1)
+              # return true if the previous tower (in that lane) is in the destroyed list
+              return (bldg_destroyed.filter((name) -> name is check_tower).length is 1)
+        when "rax"
+          # return true if tower3 in the same lane is in the destroyed list
+          return (bldg_destroyed.filter((name) -> tower3_regex.test(name))).length is 1
+        when "ancient"
+          # return true if both tower4 are in the destroyed list
+          return (bldg_destroyed.filter((name) -> ancient_regex.test(name)).length is 2)
+
+    bldg_hpdata = bldg_data.filter(isVulnerable)
+
+
 
 
     # DATA JOIN
@@ -126,7 +162,7 @@ window.DOTA2RAILS.matches.components.map = (() ->
     bldg_icons = bldg_container.selectAll("image")
       .data(bldg_data, (d) -> d.name)
     bldg_hpbars = bldg_container.selectAll("rect")
-      .data(bldg_data, (d) -> d.name)
+      .data(bldg_hpdata, (d) -> d.name)
 
     # UPDATE
     hero_icons.transition().duration(time_interval).ease(d3.ease('linear'))
