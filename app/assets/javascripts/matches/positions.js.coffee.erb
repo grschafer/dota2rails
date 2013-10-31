@@ -12,6 +12,21 @@ window.DOTA2RAILS.matches.components.map = (() ->
     'doubledamage': "<%= asset_path 'runes/doubledamage.png' %>",
     'regen': "<%= asset_path 'runes/regen.png' %>",
   }
+  bldg_files = {
+    'radiant': {
+      'rax': "<%= asset_path 'buildings/radiant_rax.png' %>",
+      'tower': "<%= asset_path 'buildings/radiant_tower.png' %>",
+      'ancient': "<%= asset_path 'buildings/radiant_ancient.png' %>",
+    }
+    'dire': {
+      'rax': "<%= asset_path 'buildings/dire_rax.png' %>",
+      'tower': "<%= asset_path 'buildings/dire_tower.png' %>",
+      'ancient': "<%= asset_path 'buildings/dire_ancient.png' %>",
+    }
+  }
+  bldg_locations = {'dota_badguys_tower1_bot': {'y': -1664.0, 'x': 6016.0}, 'dota_badguys_tower1_top': {'y': 6016.0, 'x': -4736.0}, 'good_rax_range_top': {'y': -3712.0, 'x': -6912.0}, 'dota_goodguys_fort': {'y': -5376.0, 'x': -5888.0}, 'dota_goodguys_tower2_mid': {'y': -2816.0, 'x': -3584.0}, 'bad_rax_range_top': {'y': 6016.0, 'x': 3840.0}, 'dota_goodguys_tower1_mid': {'y': -1408.0, 'x': -1536.0}, 'dota_goodguys_tower3_bot': {'y': -6144.0, 'x': -3968.0}, 'bad_rax_melee_bot': {'y': 3328.0, 'x': 6528.0}, 'dota_goodguys_tower1_top': {'y': 1792.0, 'x': -6144.0}, 'dota_badguys_tower3_mid': {'y': 3712.0, 'x': 4224.0}, 'dota_goodguys_tower3_mid': {'y': -4096.0, 'x': -4608.0}, 'dota_badguys_tower4_top': {'y': 4736.0, 'x': 4864.0}, 'good_rax_melee_mid': {'y': -4608.0, 'x': -4736.0}, 'dota_badguys_tower2_bot': {'y': 256.0, 'x': 6272.0}, 'good_rax_melee_bot': {'y': -6400.0, 'x': -4352.0}, 'dota_badguys_tower2_mid': {'y': 2048.0, 'x': 2432.0}, 'dota_badguys_tower3_bot': {'y': 2944.0, 'x': 6272.0}, 'dota_badguys_tower4_bot': {'y': 4352.0, 'x': 5248.0}, 'bad_rax_melee_mid': {'y': 3712.0, 'x': 4608.0}, 'bad_rax_melee_top': {'y': 5504.0, 'x': 3840.0}, 'dota_goodguys_tower4_top': {'y': -4992.0, 'x': -5760.0}, 'bad_rax_range_bot': {'y': 3328.0, 'x': 5888.0}, 'dota_goodguys_tower2_bot': {'y': -6144.0, 'x': -640.0}, 'dota_badguys_tower2_top': {'y': 6016.0, 'x': 0.0}, 'dota_badguys_fort': {'y': 4992.0, 'x': 5504.0}, 'good_rax_melee_top': {'y': -3712.0, 'x': -6400.0}, 'bad_rax_range_mid': {'y': 4096.0, 'x': 4224.0}, 'dota_goodguys_tower1_bot': {'y': -6144.0, 'x': 4864.0}, 'dota_badguys_tower3_top': {'y': 5760.0, 'x': 3456.0}, 'dota_goodguys_tower3_top': {'y': -3328.0, 'x': -6656.0}, 'dota_badguys_tower1_mid': {'y': 256.0, 'x': 1024.0}, 'dota_goodguys_tower4_bot': {'y': -5248.0, 'x': -5504.0}, 'good_rax_range_mid': {'y': -4224.0, 'x': -5120.0}, 'good_rax_range_bot': {'y': -5888.0, 'x': -4352.0}, 'dota_goodguys_tower2_top': {'y': -896.0, 'x': -6144.0}}
+  # TODO: run all these positions through world_to_img in init/now?
+
   world_to_img = (x,y) ->
     x: (8576.0 + x) * 0.0366 + -12.4219,
     y: (8192.0 - y) * 0.0367 + -1.2082
@@ -21,17 +36,22 @@ window.DOTA2RAILS.matches.components.map = (() ->
   # we want these variables to persist between init and update funcs
   positions = heroes = svg = null
   rune_container = null
-  rax_container = null
-  tower_container = null
-  ancient_container = null
+  bldg_container = null
   hero_container = null
   runes = null
+  bldg_hp = null
+  past_vals = {bldg_count: [], bldg_count_exit: [], bldg_count_enter: []}
 
   init = ->
     positions = gon.match.positions
     heroes = (name for name of positions when name isnt 'time')
 
     runes = gon.match.runes
+    bldg_hp = gon.match.building_hp
+    # convert bldg locations from world coordinates to image coordinates
+    for name,loc of bldg_locations
+      bldg_locations[name] = world_to_img(loc['x'], loc['y'])
+
 
     svg = d3.select("#map").append("svg")
         .attr("width", mapw)
@@ -42,9 +62,7 @@ window.DOTA2RAILS.matches.components.map = (() ->
       .attr("width", mapw)
       .attr("height", maph)
     rune_container = svg.append("g")
-    rax_container = svg.append("g")
-    tower_container = svg.append("g")
-    ancient_container = svg.append("g")
+    bldg_container = svg.append("g")
     hero_container = svg.append("g")
 
   # positions map
@@ -53,13 +71,13 @@ window.DOTA2RAILS.matches.components.map = (() ->
     # hero position/hp data
     for pos,idx in positions['time']
       break if pos > time
-    data = []
+    hero_data = []
     for h,i in heroes
       continue if idx > positions[h].length - 1
-      data.push {}
+      hero_data.push {}
       pos = world_to_img positions[h][idx][0], positions[h][idx][1]
       team = if h in gon.match.player_teams['radiant'] then 'radiant' else 'dire'
-      $.extend(data[i], {name: h, team: team, hp: positions[h][idx][2]}, pos)
+      $.extend(hero_data[i], {name: h, team: team, hp: positions[h][idx][2]}, pos)
 
     # rune data
     for pos,idx in runes
@@ -71,17 +89,44 @@ window.DOTA2RAILS.matches.components.map = (() ->
       pos = world_to_img r.x, r.y
       $.extend(rune_data[0], {'rune_type': r.rune_type}, pos)
 
+    # building data
+    bldg_data = []
+    for name,threshtimes of bldg_hp
+      # if the building isn't destroyed
+      if threshtimes.length is 0 or (threshtimes[threshtimes.length - 1].hp is 0 and threshtimes[threshtimes.length - 1].time > time)
+        for threshold,idx in threshtimes
+          if threshold.time > time
+            break
+        if idx is 0
+          hp = 100
+        else
+          hp = threshtimes[idx - 1].hp
+        team = if name.indexOf("good") isnt -1 then "radiant" else "dire"
+        bldg_type = if name.indexOf("tower") isnt -1 then "tower" else (if name.indexOf("rax") isnt -1 then "rax" else "ancient")
+        d = {name: name, hp: hp, team: team, type: bldg_type}
+        $.extend(d, bldg_locations[name])
+        bldg_data.push d
+    # sort by the order they should be drawn in (top to bottom) so images in front sit on top of those behind
+    bldg_data.sort((a,b) -> if a.y < b.y then -1 else (if a.y > b.y then 1 else 0))
+
+    # filter bldg_data to a diff list for bldg_hpbars
+
+
     # DATA JOIN
     # TODO: group icons and hp_bars under parent element (g)
     #       and apply update movements to that single element
     #hero_icons = svg.selectAll("rect")
     #  .data(data, (d) -> d.name)
     hero_icons = hero_container.selectAll("image")
-      .data(data, (d) -> d.name)
+      .data(hero_data, (d) -> d.name)
     hp_bars = hero_container.selectAll("rect")
-      .data(data, (d) -> d.name)
+      .data(hero_data, (d) -> d.name)
     rune_icons = rune_container.selectAll("image")
       .data(rune_data)
+    bldg_icons = bldg_container.selectAll("image")
+      .data(bldg_data, (d) -> d.name)
+    bldg_hpbars = bldg_container.selectAll("rect")
+      .data(bldg_data, (d) -> d.name)
 
     # UPDATE
     hero_icons.transition().duration(time_interval).ease(d3.ease('linear'))
@@ -92,6 +137,9 @@ window.DOTA2RAILS.matches.components.map = (() ->
     hp_bars.transition().duration(time_interval).ease(d3.ease('linear'))
         .attr("x", (d) -> d['x'] - 16) # subtract half of sprite width
         .attr("y", (d) -> d['y'] + 18) # show bar 2 px below bottom of sprite
+    #bldg_hp_bars
+    bldg_hpbars
+        .attr("width", (d) -> d.hp / 100 * 16)
 
     # ENTER
     #hero_icons.enter().append("rect")
@@ -121,6 +169,19 @@ window.DOTA2RAILS.matches.components.map = (() ->
         .attr("y", (d) -> d.y - 16)
         .attr("width", 32)
         .attr("height", 32)
+    bldg_icons
+      .enter().append("image")
+        .attr("xlink:href", (d) -> bldg_files[d.team][d.type])
+        .attr("x", (d) -> d.x - 16)
+        .attr("y", (d) -> if d.type is "tower" then d.y - 24 else d.y - 16)
+        .attr("width", 32)
+        .attr("height", 32)
+    bldg_hpbars.enter().append("rect")
+        .attr("fill", (d) -> if d.team is "radiant" then "rgba(0,255,0,0.5)" else "rgba(255,0,0,0.5)")
+        .attr("height", 2)
+        .attr("width", (d) -> d.hp / 100 * 16) # maxwidth = 16
+        .attr("x", (d) -> d.x - 8)
+        .attr("y", (d) -> d.y + 8)
 
 
     # ENTER + UPDATE
@@ -129,6 +190,9 @@ window.DOTA2RAILS.matches.components.map = (() ->
     hero_icons.exit().remove()
     #hp_bars.exit().remove()
     rune_icons.exit().remove()
+    bldg_icons.exit().remove()
+    bldg_hpbars.exit().remove()
+
 
   #timer_tick = positions['tick'][0]
   #update_wrapper = ->

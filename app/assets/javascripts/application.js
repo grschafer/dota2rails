@@ -15,6 +15,7 @@
 //= require jquery.scrollto
 //= require turbolinks
 //= require svg
+//= require d3
 //= require nv.d3
 //= require init
 //= require_tree ./matches
