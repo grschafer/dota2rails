@@ -4,7 +4,8 @@
 
 # TODO: DRY UP ANALYSIS JAVASCRIPT FILES (PULL OUT HELPER/UTILITY STUFF)
 window.DOTA2RAILS.matches.components.map = (() ->
-  mapfile = "<%= asset_path 'dota_gray_blur_600x580.jpg' %>"
+  #mapfile = "<%= asset_path 'dota_gray_blur_600x580.jpg' %>"
+  mapfile = "<%= asset_path 'map_blur_desat.jpg' %>"
   rune_files = {
     'invis': "<%= asset_path 'runes/invis.png' %>",
     'haste': "<%= asset_path 'runes/haste.png' %>",
@@ -37,9 +38,9 @@ window.DOTA2RAILS.matches.components.map = (() ->
   }
 
   world_to_img = (x,y) ->
-    x: (8576.0 + x) * 0.0366 + -12.4219,
-    y: (8192.0 - y) * 0.0367 + -1.2082
-  mapw = 600
+    x: (8576.0 + x) * 0.0366 + -22.4219,
+    y: (8192.0 - y) * 0.0368 + -2.5158
+  mapw = 580
   maph = 580
 
   # we want these variables to persist between init and update funcs
@@ -235,8 +236,8 @@ window.DOTA2RAILS.matches.components.map = (() ->
         .attr("xlink:href", (d) -> rune_files[d.rune_type])
         .attr("x", (d) -> d.x - 16)
         .attr("y", (d) -> d.y - 16)
-        .attr("width", 32)
-        .attr("height", 32)
+        .attr("width", 16)
+        .attr("height", 16)
     bldg_icons
       .enter().append("image")
         .attr("xlink:href", (d) -> bldg_files[d.team][d.type])
