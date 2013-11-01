@@ -14,7 +14,7 @@ window.DOTA2RAILS.matches.components.eventlog = (() ->
     last_scrolled = null
 
     eventlist = []
-    eventlist = eventlist.concat(x) for x in [gon.match.roshans, gon.match.buybacks, gon.match.runes, gon.match.kill_list]
+    eventlist = eventlist.concat(x) for x in [gon.match.roshans, gon.match.buybacks, gon.match.kill_list]
     eventlist.sort (a,b) ->
         return -1 if a.time < b.time
         return 0 if a.time is b.time
@@ -29,9 +29,6 @@ window.DOTA2RAILS.matches.components.eventlog = (() ->
       hero_killers = hero_killers.concat(iconize_hero(name)) for name of killers when name.indexOf("hero") isnt -1
       hero_killers.join('')
     switch evt.event
-      when 'rune_spawn' then "#{evt.rune_type} rune spawned"
-      when 'rune_bottle' then "#{evt.rune_type} rune bottled by #{iconize_hero(evt.hero)}"
-      when 'rune_pickup' then "#{evt.rune_type} rune used by #{iconize_hero(evt.hero)}"
       when 'roshan_kill' then "#{evt.team} killed Roshan"
       when 'aegis_pickup' then "#{iconize_hero(evt.hero)} picked up aegis"
       when 'aegis_denied' then "#{iconize_hero(evt.hero)} denied the aegis"
