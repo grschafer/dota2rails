@@ -5,6 +5,7 @@
 # TODO: DRY UP ANALYSIS JAVASCRIPT FILES (PULL OUT HELPER/UTILITY STUFF)
 window.DOTA2RAILS.matches.components.graph = (() ->
   line_home = null
+  chart = null
   init = ->
     nv.addGraph
       generate: ->
@@ -13,6 +14,20 @@ window.DOTA2RAILS.matches.components.graph = (() ->
 
         chart.tooltips(true)
         chart.useInteractiveGuideline(true)
+        data = gold_xp_data(id)
+        gold_range = d3.extent(data[0].values, (d) -> d.y)
+        xp_range = d3.extent(data[1].values, (d) -> d.y)
+        range = gold_range.concat(xp_range)
+        biggest = d3.max(range.map(Math.abs))
+        chart.forceY([-biggest, biggest])
+
+        radiant_name = gon.match.radiant_name or "radiant"
+        dire_name = gon.match.dire_name or "dire"
+        chart.valueFormatter((d, i) ->
+          team = if d > 0 then radiant_name else dire_name
+          d = Math.abs(d)
+          "#{chart.yAxis.tickFormat()(d)} advantage for #{team}"
+        )
 
 
         chart.xAxis
@@ -25,7 +40,7 @@ window.DOTA2RAILS.matches.components.graph = (() ->
           .tickFormat(d3.format(',d'))
 
         d3.select("#{id} svg")
-          .datum(gold_xp_data(id))
+          .datum(data)
         .transition().duration(500)
           .call(chart)
 
