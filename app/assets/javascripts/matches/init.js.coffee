@@ -10,7 +10,9 @@ ns.init = ->
   formatMin = d3.time.format "%M:%S"
   formatHour = d3.time.format "%H:%M:%S"
   formatTime = (d) ->
-    if d > 3600
+    if d < 0
+      "-#{formatMin(new Date(2012, 0, 1, 0, 0, -d))}"
+    else if d > 3600
       formatHour(new Date(2012, 0, 1, 0, 0, d))
     else
       formatMin(new Date(2012, 0, 1, 0, 0, d))
@@ -30,21 +32,20 @@ ns.show = ->
   curTime = $('#curTime')
   startTime = gon.match['positions']['time'][0]
   endTime = gon.match['positions']['time'][gon.match['positions']['time'].length - 1]
+  time = startTime
   time_interval = 1000 / 2 # interval at which to update all components by the time_delta
   time_delta = 1 # how much ingame time to add (in seconds)
 
-  gameDuration = ns.utils.formatTime(endTime - startTime)
+  gameDuration = ns.utils.formatTime(endTime)
   update_time_label = () ->
-    gameTime = time - startTime
-    curTime.html("#{ns.utils.formatTime(gameTime)} / #{gameDuration}")
+    curTime.html("#{ns.utils.formatTime(time)} / #{gameDuration}")
     slider= $('#time_slider')
     scale = slider.width() / (endTime - startTime)
-    leftOffset = gameTime * scale - 42 # 42 is half-width of text "01:23 / 45:67"
+    leftOffset = time * scale - 42 # 42 is half-width of text "01:23 / 45:67"
     curTime.css('left', leftOffset)
 
-  time = startTime
   update_wrapper = ->
-    $('#time_slider').val(time);
+    $('#time_slider').val(time)
     update_time_label()
     #console.log time
     for _,component of ns.components
