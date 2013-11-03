@@ -25,3 +25,22 @@
   filter: gray; /* IE6-9 */
   -webkit-filter: grayscale(1); /* Google Chrome, Safari 6+ & Opera 15+ */
 }
+#eventlog p {
+  margin: 0;
+  padding: 5px;
+}
+table.table {
+  width: auto;
+}
+table.table {
+  > tbody > tr > td {
+    padding: 0px;
+    > div {
+      white-space: nowrap;
+      overflow-x: hidden;
+      height: 32px;
+      width: 100%;
+      padding: 5px;
+    }
+  }
+}
