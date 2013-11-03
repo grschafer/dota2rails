@@ -7,12 +7,40 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
 
   # we want these variables to persist between init and update funcs
   scoreboards = player_names = player_teams = last_update_idx = null
+  highlight_columns = null
+
+  # takes thresholds and returns a function that maps a value to
+  # a color based on the thresholds
+  # eg - assists_colorizer = colorizer(1,2,3,4)
+  #      assists_colorizer(3) # returns rgb(190,190,60)
+  colorizer = () ->
+    thresholds = arguments
+    factor = 2.0 / thresholds.length
+    (val) ->
+      val = -val if val < 0
+      yellow = d3.hsl(50,1,0.5)
+      for threshold,idx in thresholds
+        return yellow.brighter(2.0 - factor * idx) if val < threshold
+      yellow
 
   init = ->
     scoreboards = gon.match.scoreboards
     player_names = gon.match.player_names
     player_teams = gon.match.player_teams
     last_update_idx = null
+
+    # rules for highlighting changes in columns based on magnitude of the
+    # change in the contained value (kills, gold, last hits, etc.)
+    # the index number refers to the index within text_cells below (which does
+    # not include icon cells (hero and items))
+    highlight_columns = []
+    highlight_columns[1] = colorizer(1,2,3) # levels
+    highlight_columns[2] = highlight_columns[4] = colorizer(1,2,3,4,5) # kills, assists
+    highlight_columns[3] = colorizer(1,2) # deaths
+    highlight_columns[5] = colorizer(100,300,600,1000,3000) # gold
+    highlight_columns[6] = colorizer(2,4,7,11) # last hits
+    highlight_columns[7] = colorizer(1,2,3,5) # denies
+
 
   update = (time) ->
     for scoreboard,idx in scoreboards
@@ -59,7 +87,9 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
     iconcells = radcells.filter((d,i) -> i == 1 or 6 <= i <= 11 )
     iconcells.attr("class", (d) -> if (d? and d isnt 0) then "#{d}-icon" else "")
     textcells = radcells.filter((d,i) -> i != 1 and (i < 6 or i > 11))
-    textcells.classed("cell-change", (d) -> this.textContent isnt "#{d}")
+    textcells.style("background-color", (d,i) ->
+      if highlight_columns[i]?
+        highlight_columns[i](d - parseInt(this.textContent)) or "")
     textcells.text((d) -> d)
 
     diretable = d3.select("#dire_players")
@@ -71,7 +101,9 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
     iconcells = direcells.filter((d,i) -> i == 1 or 6 <= i <= 11 )
     iconcells.attr("class", (d) -> if (d? and d isnt 0) then "#{d}-icon" else "")
     textcells = direcells.filter((d,i) -> i != 1 and (i < 6 or i > 11))
-    textcells.classed("cell-change", (d) -> this.textContent isnt "#{d}")
+    textcells.style("background-color", (d,i) ->
+      if highlight_columns[i]?
+        highlight_columns[i](d - parseInt(this.textContent)) or "")
     textcells.text((d) -> d)
     #direcells.classed("cell-change", (d) -> this.textContent isnt d and this.textContent isnt "#{d}")
 
