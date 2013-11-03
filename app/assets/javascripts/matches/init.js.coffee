@@ -41,7 +41,7 @@ ns.show = ->
     curTime.html("#{ns.utils.formatTime(time)} / #{gameDuration}")
     slider= $('#time_slider')
     scale = slider.width() / (endTime - startTime)
-    leftOffset = time * scale - 42 # 42 is half-width of text "01:23 / 45:67"
+    leftOffset = (time + 90) * scale - 42 # 42 is half-width of text "01:23 / 45:67"
     curTime.css('left', leftOffset)
 
   update_wrapper = ->

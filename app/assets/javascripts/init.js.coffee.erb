@@ -17,7 +17,7 @@ UTIL =
     ns = window.DOTA2RAILS
     action = if action is undefined then "init" else action
     if controller isnt "" and ns[controller]? and typeof ns[controller][action] is "function"
-      ns[controller][action]();
+      ns[controller][action]()
 
   init: ->
     body = document.body

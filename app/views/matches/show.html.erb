@@ -1,5 +1,6 @@
 <p id="notice"><%= notice %></p>
 
+<div class="container">
 <div class="row">
   <div class="col-xs-1"></div>
   <div class="col-xs-7">
@@ -13,20 +14,21 @@
   <div class="col-xs-1"></div>
 </div>
 <div class="row">
-  <%#<div class="col-lg-5">%>
+  <div class="col-xs-12 col-md-5">
     <%= render 'map' %>
-  <%#</div>%>
-  <div class="col-lg-7">
+  </div>
+  <div class="col-xs-12 col-md-7">
     <%= render 'scoreboard' %>
   </div>
 </div>
 <div class="row">
-  <%#<div class="col-lg-5">%>
+  <div class="col-xs-12 col-md-5">
     <%= render 'eventlog' %>
-  <%#</div>%>
-  <div class="col-lg-7">
+  </div>
+  <div class="col-xs-12 col-md-7">
     <%= render 'graphs' %>
   </div>
+</div>
 </div>
 
 <!-- svg filter for desaturating the icons of dead heroes -->

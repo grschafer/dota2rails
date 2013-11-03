@@ -18,5 +18,6 @@
 //= require d3
 //= require nv.d3
 //= require init
+//= require common
 //= require_tree ./matches
 
