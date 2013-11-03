@@ -6,6 +6,8 @@
 window.DOTA2RAILS.matches.components.graph = (() ->
   line_home = null
   chart = null
+  gold_color = d3.hsl(50, 1, 0.5).brighter(0.2)
+  xp_color = d3.hsl(50, 1, 0.5).darker(1.2)
   init = ->
     nv.addGraph
       generate: ->
@@ -76,7 +78,7 @@ window.DOTA2RAILS.matches.components.graph = (() ->
             else if hero in player_teams['dire']
               d += if herodata[idx]? then herodata[idx] else herodata[herodata.length - 1]
           values.push {'x': time, 'y': r - d}
-        dataset.push {key: data_label, color: (if data_label is 'gold' then 'blue' else 'green'), values: values}
+        dataset.push {key: data_label, color: (if data_label is 'gold' then gold_color else xp_color), values: values}
       dataset
 
   update = (time) ->
