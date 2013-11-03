@@ -15,12 +15,13 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
   #      assists_colorizer(3) # returns rgb(190,190,60)
   colorizer = () ->
     thresholds = arguments
-    factor = 2.0 / thresholds.length
+    highest_brightness = 1.5
+    factor = highest_brightness / thresholds.length
     (val) ->
       val = -val if val < 0
-      yellow = d3.hsl(50,1,0.5)
+      yellow = d3.hsl(50,1,0.6)
       for threshold,idx in thresholds
-        return yellow.brighter(2.0 - factor * idx) if val < threshold
+        return yellow.brighter(highest_brightness - factor * idx) if val < threshold
       yellow
 
   init = ->
