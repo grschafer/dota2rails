@@ -2,30 +2,28 @@
 
 <div class="container">
 <div class="row">
-  <div class="col-xs-1"></div>
-  <div class="col-xs-7">
+  <div id="playback_controls">
+    <%= render 'playback_controls' %>
+  </div>
+  <div id="playback_slider">
     <%= render partial: 'playback_slider',
         locals: {start_time: -90,
                  end_time: @match['positions']['time'][-1]} %>
   </div>
-  <div class="col-xs-3">
-    <%= render 'playback_controls' %>
-  </div>
-  <div class="col-xs-1"></div>
 </div>
 <div class="row">
-  <div class="col-xs-12 col-md-5">
+  <div class="float_lg">
     <%= render 'map' %>
   </div>
-  <div class="col-xs-12 col-md-7">
+  <div id="scoreboard" class="float_lg">
     <%= render 'scoreboard' %>
   </div>
 </div>
 <div class="row">
-  <div class="col-xs-12 col-md-5">
+  <div class="float_lg">
     <%= render 'eventlog' %>
   </div>
-  <div class="col-xs-12 col-md-7">
+  <div class="float_lg">
     <%= render 'graphs' %>
   </div>
 </div>

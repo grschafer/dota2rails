@@ -2,51 +2,131 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-.cell-change {
-  background-color: #ff0;
+$break-large: $screen-lg; // $screen-lg defined in application.css.scss as 1366px
+
+@mixin respond-to($media) {
+  @if $media == large {
+    @media (min-width: $break-large), (orientation: landscape) {
+      @content;
+      .mobile {
+        @content;
+      }
+    }
+  }
+  @else if $media == mobile {
+    @media (orientation: landscape) { @content; }
+  }
 }
 
-/* blackout inventory cells */
-/*table > tbody > tr {
-  td:nth-child(7),
-  td:nth-child(8),
-  td:nth-child(9),
-  td:nth-child(10),
-  td:nth-child(11),
-  td:nth-child(12) {
-    background-color: black;
-    /*-webkit-transform: scale(0.5,0.5);
+.container {
+  @include respond-to(large) {
+    max-width: $break-large;
   }
-}*/
+}
 
-/* filter must be included in the page for this to work? see views/matches/show.html.erb */
+// ===== shared =====
+.float_lg {
+  @include respond-to(large) {
+    float: left;
+  }
+}
+
+// ===== playback controls =====
+#curTime {
+  width: 100px;
+}
+#playback_controls {
+  width: 180px;
+  padding-right: 50px;
+  float: right;
+}
+#playback_slider {
+  padding: 0 50px 0 50px;
+  overflow: auto;
+  #time_slider {
+    width: 100%;
+  }
+}
+
+// ===== positions map =====
+#map {
+  width: 580px;
+  margin-left: auto;
+  margin-right: auto;
+  @include respond-to(large) {
+    margin-left: 0px;
+    margin-right:20px;
+  }
+}
+
+// filter must be included in the page for this to work? see views/matches/show.html.erb
 .desaturate {
   filter: url(#grayscale); /* Firefox 3.5+ */
   filter: gray; /* IE6-9 */
   -webkit-filter: grayscale(1); /* Google Chrome, Safari 6+ & Opera 15+ */
 }
-#eventlog p {
-  margin: 0;
-  padding: 5px;
-}
-table.table {
-  width: auto;
-}
-table.table {
-  > tbody > tr > td {
-    padding: 0px;
-    > div {
-      white-space: nowrap;
-      overflow-x: hidden;
-      height: 32px;
-      width: 100%;
-      padding: 5px;
+
+// ===== scoreboard table =====
+#scoreboard {
+  width: 750px;
+  margin-left: auto;
+  margin-right: auto;
+  @include respond-to(large) {
+    margin: 0;
+  }
+  > table {
+    width: auto;
+
+    > tbody > tr > td {
+      padding: 0px;
+      > div {
+        white-space: nowrap;
+        overflow-x: hidden;
+        height: 32px;
+        width: 100%;
+        padding: 5px;
+      }
     }
   }
 }
-#curTime {
-  width: 100px;
+
+// ===== events/kills log =====
+#eventlog {
+  width: 750px;
+  height: 280px;
+  overflow-y: scroll;
+  margin-left: auto;
+  margin-right: auto;
+  @include respond-to(large) {
+    width: 580px;
+    margin-left: 0px;
+    margin-right: 20px;
+  }
 }
-.container {
-  max-width: 1420px;
+#eventlog p {
+  margin: 0;
+  padding: 5px;
+  span {
+    font-size: 14px;
+  }
+}
+
+// ===== gold/xp graph =====
+#chart {
+  width:750px;
+  margin-left: auto;
+  margin-right: auto;
+  @include respond-to(large) {
+    margin:0;
+  }
+  svg {
+    height: 300px;
+  }
+}
+
+// mobile
+.mobile #scoreboard, #chart {
+  @include respond-to(mobile) {
+    margin-right: -600px;
+  }
 }

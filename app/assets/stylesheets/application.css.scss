@@ -18,5 +18,13 @@
  *= require rune_sheet
  * require_tree .
  */
+
+// prevent inline-form from stacking on narrow screen
+$screen-sm: 100px; // default: 768px
+// prevent 100% width things from popping when passing 970px
+$screen-med: 100px; // default: 970px
+// raise large screen break point from 1170 to 1366px
+$screen-lg: 1366px;
+
 @import "bootstrap";
 @import "matches";

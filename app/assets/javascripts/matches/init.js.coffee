@@ -43,6 +43,8 @@ ns.show = ->
     scale = slider.width() / (endTime - startTime)
     leftOffset = (time + 90) * scale - 42 # 42 is half-width of text "01:23 / 45:67"
     curTime.css('left', leftOffset)
+  window.onresize = ->
+    update_time_label()
 
   update_wrapper = ->
     $('#time_slider').val(time)
