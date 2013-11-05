@@ -4,36 +4,34 @@
 
 $break-large: $screen-lg; // $screen-lg defined in application.css.scss as 1366px
 
-@mixin respond-to($media) {
-  @if $media == large {
-    @media (min-width: $break-large), (orientation: landscape) {
+@mixin for-layout($media) {
+  // apply style when screen width > 1366px or when on mobile landscape
+  @if $media == wide {
+    @media (min-width: $break-large) {
       @content;
-      .mobile {
+    }
+    @media (orientation: landscape) {
+      .mobile & {
         @content;
       }
     }
   }
-  @else if $media == mobile {
-    @media (orientation: landscape) { @content; }
-  }
 }
 
 .container {
-  @include respond-to(large) {
-    max-width: $break-large;
-  }
+  @include for-layout(wide) { max-width: $break-large; }
 }
 
 // ===== shared =====
 .float_lg {
-  @include respond-to(large) {
-    float: left;
-  }
+  @include for-layout(wide) { float: left; }
 }
 
 // ===== playback controls =====
 #curTime {
   width: 100px;
+  // http://stackoverflow.com/questions/11289166/chrome-on-android-resizes-font
+  max-height: 999999px;
 }
 #playback_controls {
   width: 180px;
@@ -51,9 +49,10 @@ $break-large: $screen-lg; // $screen-lg defined in application.css.scss as 1366p
 // ===== positions map =====
 #map {
   width: 580px;
+  height: 580px;
   margin-left: auto;
   margin-right: auto;
-  @include respond-to(large) {
+  @include for-layout(wide) {
     margin-left: 0px;
     margin-right:20px;
   }
@@ -71,8 +70,8 @@ $break-large: $screen-lg; // $screen-lg defined in application.css.scss as 1366p
   width: 750px;
   margin-left: auto;
   margin-right: auto;
-  @include respond-to(large) {
-    margin: 0;
+  @include for-layout(wide) {
+    margin: 0 -740px 0 0;
   }
   > table {
     width: auto;
@@ -97,17 +96,18 @@ $break-large: $screen-lg; // $screen-lg defined in application.css.scss as 1366p
   overflow-y: scroll;
   margin-left: auto;
   margin-right: auto;
-  @include respond-to(large) {
+  @include for-layout(wide) {
     width: 580px;
     margin-left: 0px;
     margin-right: 20px;
   }
-}
-#eventlog p {
-  margin: 0;
-  padding: 5px;
-  span {
-    font-size: 14px;
+
+  p {
+    margin: 0;
+    padding: 5px;
+
+    // http://stackoverflow.com/questions/11289166/chrome-on-android-resizes-font
+    max-height: 999999px;
   }
 }
 
@@ -116,17 +116,10 @@ $break-large: $screen-lg; // $screen-lg defined in application.css.scss as 1366p
   width:750px;
   margin-left: auto;
   margin-right: auto;
-  @include respond-to(large) {
-    margin:0;
+  @include for-layout(wide) {
+    margin: 0 -740px 0 0;
   }
   svg {
     height: 300px;
-  }
-}
-
-// mobile
-.mobile #scoreboard, #chart {
-  @include respond-to(mobile) {
-    margin-right: -600px;
   }
 }

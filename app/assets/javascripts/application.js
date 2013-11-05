@@ -17,6 +17,7 @@
 //= require svg
 //= require d3
 //= require nv.d3
+//= require css_browser_selector
 //= require init
 //= require common
 //= require_tree ./matches
