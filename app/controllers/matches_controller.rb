@@ -1,6 +1,7 @@
 require 'json'
 
 class MatchesController < ApplicationController
+  caches_page :index, :show
   before_action :set_match, except: [:index]
 
   # GET /matches
@@ -13,6 +14,10 @@ class MatchesController < ApplicationController
   # GET /matches/1.json
   def show
     gon.match = @match
+    respond_to do |format|
+      format.html
+      format.json { render json: @match }
+    end
   end
 
   private

@@ -22,3 +22,7 @@ pickle-email-*.html
 
 # don't want to commit precompiled assets right now
 /public/assets/*
+
+# ignore cached pages
+/public/index.html
+/public/matches/*
