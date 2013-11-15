@@ -34,8 +34,13 @@ window.DOTA2RAILS.matches.components.eventlog = (() ->
       when 'aegis_denied' then "#{iconize_hero(evt.hero)} denied the aegis"
       when 'aegis_stolen' then "#{iconize_hero(evt.hero)} stole the aegis"
       when 'buyback' then "#{iconize_hero(evt.hero)} bought back for #{evt.cost} gold"
-      when 'kill' then "#{iconize_killers(evt.killers)} killed #{iconize_hero(evt.hero)}, earning #{evt.bounty_gold} gold, #{evt.bounty_xp} xp"
-      when 'deny' then "#{iconize_killers(evt.killers)} denied #{iconize_hero(evt.hero)}"
+      when 'kill'
+        if evt.killer_streak
+          "#{iconize_hero(evt.killer)} killed #{iconize_hero(evt.hero)}, earning #{evt.bounty_gold} gold [#{evt.killer_streak}, #{evt.victim_streak}]"
+        else
+          "#{iconize_hero(evt.killer)} killed #{iconize_hero(evt.hero)}, earning #{evt.bounty_gold} gold"
+
+      when 'deny' then "#{iconize_hero(evt.killer)} denied #{iconize_hero(evt.hero)}"
 
   update = (time) ->
     # find all events within 30 seconds on either side of current time
