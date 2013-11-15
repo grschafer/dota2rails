@@ -25,4 +25,5 @@ pickle-email-*.html
 
 # ignore cached pages
 /public/index.html
+/public/matches.html
 /public/matches/*

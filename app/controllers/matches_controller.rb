@@ -1,7 +1,9 @@
 require 'json'
 
 class MatchesController < ApplicationController
-  caches_page :index, :show
+  if Rails.env.production?
+    caches_page :index, :show
+  end
   before_action :set_match, except: [:index]
 
   # GET /matches
