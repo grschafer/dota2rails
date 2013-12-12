@@ -29,7 +29,7 @@ $break-large: $screen-lg; // $screen-lg defined in application.css.scss as 1366p
 
 // ===== playback controls =====
 #curTime {
-  width: 100px;
+  width: 120px;
   // http://stackoverflow.com/questions/11289166/chrome-on-android-resizes-font
   max-height: 999999px;
 }
@@ -40,7 +40,7 @@ $break-large: $screen-lg; // $screen-lg defined in application.css.scss as 1366p
 }
 #playback_slider {
   padding: 0 50px 0 50px;
-  overflow: auto;
+  overflow: hidden;
   #time_slider {
     width: 100%;
   }
@@ -82,9 +82,12 @@ $break-large: $screen-lg; // $screen-lg defined in application.css.scss as 1366p
         white-space: nowrap;
         overflow-x: hidden;
         height: 32px;
-        width: 100%;
+        width: 100%; // makes item cells no wider than their images
         padding: 5px;
       }
+    }
+    > tbody > tr td:first-child div {
+      width: 130px; // enforce player name width constraint
     }
   }
 }

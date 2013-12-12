@@ -1,9 +1,13 @@
 module MatchesHelper
-  def sec_to_hms(x)
-    #Time.at(x).utc.strftime('%H:%M:%S')
-    h = (x/3600 == 0) ? "" : "#{x/3600}:"
-    m = (x/60 == 0) ? "" : "#{x/60}:"
-    "#{h}#{m}#{x%60}"
+  def sec_to_hms(s)
+    #Time.at(s).utc.strftime('%H:%M:%S')
+    mm, ss = s.divmod(60)
+    hh, mm = mm.divmod(60)
+    if hh > 0
+      "#{hh}:#{mm.to_s.rjust(2, '0')}:#{ss.to_s.rjust(2, '0')}"
+    else
+      "#{mm}:#{ss.to_s.rjust(2, '0')}"
+    end
   end
 
   # TODO: refinement of fixnum?
