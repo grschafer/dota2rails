@@ -1,0 +1,19 @@
+# Common prereqs (e.g. build tools, libs)
+- include: common-prereqs.yml
+
+# rbenv setup
+- include: rbenv-setup.yml
+  sudo_user: "{{ ruby_deploy_user }}"
+
+# Installing required ruby versions
+- include: ruby-install.yml ruby_version={{ version }}
+  sudo_user: "{{ ruby_deploy_user }}"
+
+# Configuring ruby environment (e.g. setting the defaut ruby)
+- include: rbenv-configure.yml ruby_version={{ version }}
+  sudo_user: "{{ ruby_deploy_user }}"
+
+# Common ruby environment tasks (e.g. adding a .gemrc, ...)
+- include: common-post.yml
+  sudo_user: "{{ ruby_deploy_user }}"
+

@@ -1,0 +1,15 @@
+---
+- name: add mongodb repo
+  command: 'sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10'
+
+- name: add mongodb source
+  shell: echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list
+
+# takes care of making mongodb user and starting/enabling service
+- name: install mongodb
+  apt: pkg=mongodb-10gen state=latest update_cache=yes
+
+- name: copy templated mongodb.conf
+  template: src=mongodb.conf.j2 dest=/etc/mongodb.conf
+  notify:
+    - restart mongodb

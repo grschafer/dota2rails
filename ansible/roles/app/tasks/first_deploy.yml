@@ -1,0 +1,43 @@
+---
+# not using gem ansible module b/c gem binary won't be where it expects
+# see https://groups.google.com/forum/#!topic/ansible-project/bcpYT13yao8
+- name: install global gems
+  command: "{{ ruby_bin }}/gem install {{ item }} chdir=~"
+  #gem: name={{ item }} state=latest
+  sudo: yes
+  with_items:
+    - bundler
+
+- name: ensure repo exists at {{ deploy_path }}
+  stat: path={{ deploy_path }}
+  register: app_path
+
+- fail: msg="Webapp repo was not synced to the server/VM"
+  sudo: yes
+  when: app_path.stat.isdir is not defined or app_path.stat.isdir == false
+
+- name: give repo to {{ deploy_user }}
+  sudo: yes
+  file:
+    path={{ deploy_path }}
+    owner={{ deploy_user }}
+    recurse=yes
+
+- name: ensure steam_api_key in config
+  lineinfile: '
+    dest={{ deploy_path }}/config/application.yml
+    regexp=^STEAM_WEB_API_KEY
+    line="STEAM_WEB_API_KEY: {{ steam_api_key }}"
+    create=yes
+    state=present'
+
+- name: ensure app secret in config
+  lineinfile: '
+    dest={{ deploy_path }}/config/application.yml
+    regexp=^SECRET_TOKEN
+    line="SECRET_TOKEN: {{ app_secret }}"
+    create=yes
+    state=present'
+
+- name: copy mongodb access details
+  template: src=mongo.rb.j2 dest={{ deploy_path }}/config/initializers/mongo.rb

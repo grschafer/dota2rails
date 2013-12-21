@@ -1,0 +1,16 @@
+---
+#- include: known_hosts.yml
+
+# first_deploy does:
+# - assigns repo dir permissions
+# - writes steam_api_key to config
+# - writes app_secret to config
+# - writes db access data to config
+- include: first_deploy.yml tags=deploy
+
+# deploy does:
+# - update gems
+# - clear cached pages
+# - precompile assets
+# - restart unicorn
+- include: deploy.yml tags=deploy

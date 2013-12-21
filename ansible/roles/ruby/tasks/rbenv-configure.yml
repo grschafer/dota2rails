@@ -1,0 +1,9 @@
+- name: Ruby | Sets global rbenv version
+  action: shell cd; bash -lc "rbenv global {{ version }}"
+  when: version == ruby_default
+  tags:
+    - ruby
+    - ruby:install
+    - install
+    - version
+

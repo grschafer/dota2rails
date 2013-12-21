@@ -1,0 +1,43 @@
+---
+- name: setup machine
+  hosts: none # all
+  sudo: yes
+  roles:
+    - role: common
+
+- name: install rbenv and ruby
+  hosts: none # webservers
+  sudo: yes
+  roles:
+    - role: ruby-multi
+      versions: $ruby_versions
+
+- name: install nodejs
+  hosts: none # webservers
+  sudo: yes
+  roles:
+    - role: nodejs
+
+- name: install nginx
+  hosts: none # webservers
+  sudo: yes
+  roles:
+    - role: nginx
+
+- name: install mongodb
+  hosts: none # dbservers
+  sudo: yes
+  roles:
+    - role: mongodb
+    - role: mongodb-firewall
+
+- name: install app
+  hosts: webservers
+  remote_user: "{{ deploy_user }}"
+  sudo: no
+  vars:
+    ruby_bin: "/home/{{ deploy_user }}/.rbenv/shims"
+  roles:
+    - role: app
+
+# TODO: gems and stuff or using capistrano too?

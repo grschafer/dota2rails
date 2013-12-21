@@ -1,0 +1,58 @@
+---
+- name: update apt cache
+  apt: update_cache=yes cache_valid_time=3600
+  sudo: yes
+
+- name: upgrade the distro
+  apt: upgrade=yes
+  sudo: yes
+
+- name: install packages
+  apt: pkg={{ item }} state=latest
+  sudo: yes
+  with_items:
+    - build-essential
+    - git
+    - tree
+    - vim
+    - psmisc
+    - fail2ban
+    - chkrootkit
+    - ufw
+    - curl
+    - gnupg
+    - zip
+    - rsync
+    - wget
+    - unattended-upgrades
+
+- name: ensure fail2ban is running
+  sudo: yes
+  service: name=fail2ban state=restarted enabled=yes
+
+- name: forbid SSH root login
+  sudo: yes
+  lineinfile: destfile=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present
+  notify:
+    - restart ssh
+
+- name: forbid password login
+  sudo: yes
+  lineinfile: destfile=/etc/ssh/sshd_config regexp="^(#)?PasswordAuthentication" line="PasswordAuthentication no" state=present
+  notify:
+    - restart ssh
+
+- name: reset firewall
+  sudo: yes
+  shell: ufw --force reset
+
+- name: allow firewall authorized ports
+  sudo: yes
+  shell: ufw allow {{ item }}
+  with_items:
+    - 22
+
+- name: enable firewall
+  sudo: yes
+  shell: ufw --force enable
+

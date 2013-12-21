@@ -1,4 +1,4 @@
-# Ansible managed: /home/greg/repos/dota2rails/ansible/roles/app/templates/mongo.rb.j2 modified on 2013-12-20 21:51:31 by greg on ubuntu
+# {{ ansible_managed }}
 # http://www.flaviogambardella.com/ruby-on-rails/configure-rails-to-use-mongodb-without-mongomapper/
 class MongoConfig
   class << self
@@ -6,5 +6,6 @@ class MongoConfig
   end
 end
 
-connection = Mongo::Connection.new("10.11.12.13", 27017)
+connection = Mongo::Connection.new("{{ groups['dbservers'][0] }}", {{ mongodb_port }})
 MongoConfig.connection = connection
+
