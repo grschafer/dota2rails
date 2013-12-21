@@ -1,4 +1,0 @@
-- fail: msg= "Sorry - This role only supports up to 5 ruby versions"
-  when: "5 < versions|length"
-
-
