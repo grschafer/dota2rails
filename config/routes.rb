@@ -8,6 +8,10 @@ Dota2rails::Application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'matches#index'
 
+  # authentication endpoints
+  post 'auth/steam/callback' => 'auth#auth_callback'
+  get 'logout' => 'auth#logout'
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

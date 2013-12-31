@@ -6,5 +6,5 @@ class MongoConfig
   end
 end
 
-connection = Mongo::Connection.new("10.11.12.13", 27017)
+connection = Mongo::Connection.new("localhost", 27017)
 MongoConfig.connection = connection

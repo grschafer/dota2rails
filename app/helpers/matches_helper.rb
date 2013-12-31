@@ -1,6 +1,7 @@
 module MatchesHelper
   def sec_to_hms(s)
     #Time.at(s).utc.strftime('%H:%M:%S')
+    s = s.to_i
     mm, ss = s.divmod(60)
     hh, mm = mm.divmod(60)
     if hh > 0

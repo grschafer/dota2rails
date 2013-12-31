@@ -1,9 +1,6 @@
 require 'json'
 
 class MatchesController < ApplicationController
-  if Rails.env.production?
-    caches_page :index, :show
-  end
   before_action :set_match, except: [:index]
 
   # GET /matches
@@ -22,7 +19,9 @@ class MatchesController < ApplicationController
     end
   end
 
+
   private
+
     # Use callbacks to share common setup or constraints between actions.
     # TODO: CACHE MATCH
     def set_match
