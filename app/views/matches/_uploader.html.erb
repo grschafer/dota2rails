@@ -1,0 +1,19 @@
+<%= s3_uploader_form callback_url: matches_url,
+  callback_param: "replay_url",
+  acl: 'public-read',
+  id: "s3-uploader" do %>
+  <%= file_field_tag :file %>
+<% end %>
+
+<form id="upload-notiform" style="display:hidden;">
+  <p>TODO</p>
+</div>
+
+<script id="template-upload" type="text/x-tmpl">
+<div id="file-{%=o.unique_id%}" class="upload">
+  {%=o.name%}
+  <div class="progress progress-striped active">
+    <div class="bar progress-bar" role="progressbar" style="height: 18px; width: 0%"></div>
+  </div>
+</div>
+</script>

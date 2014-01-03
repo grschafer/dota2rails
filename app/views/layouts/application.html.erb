@@ -25,10 +25,8 @@
   <!-- Collect the nav links, forms, and other content for toggling -->
   <div class="collapse navbar-collapse navbar-ex1-collapse">
     <ul class="nav navbar-nav">
-      <li><a href="/matches">The International 3</a></li>
-      <li class="active">
-        <%= link_to "Match #{params[:id]}", match_path if params.key?(:id) %>
-      </li>
+      <li><a href="/matches">Public Matches</a></li>
+      <li><a href="/mymatches">My Matches</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
       <% if session.key? :current_user %>
@@ -45,22 +43,24 @@
 <%= yield %>
 
 </body>
-  <%#<%= javascript_include_tag params[:controller], "data-turbolinks-track" => true %>
-  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
-  <script type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-44956803-1']);
-    _gaq.push(['_setDomainName', window.location.host]);
-    _gaq.push(['_setAllowLinker', true]);
-    _gaq.push(['_trackPageview']);
 
-    (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript';
-      ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 
+<%#<%= javascript_include_tag params[:controller], "data-turbolinks-track" => true %>
+<%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-44956803-1']);
+  _gaq.push(['_setDomainName', window.location.host]);
+  _gaq.push(['_setAllowLinker', true]);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script');
+    ga.type = 'text/javascript';
+    ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' :
       'http://www') + '.google-analytics.com/ga.js';
     var s = document.getElementsByTagName('script')[0];
-      s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
+    s.parentNode.insertBefore(ga, s);
+  })();
+</script>
 </html>

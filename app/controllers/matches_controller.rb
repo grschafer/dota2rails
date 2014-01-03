@@ -19,6 +19,18 @@ class MatchesController < ApplicationController
     end
   end
 
+  # POST /matches
+  # for newly-uploaded replay
+  def create
+    # TODO: add validation to only allow uploading .dem files (would be in JS)
+    # TODO: kick off celery task
+    replay_url = request.params['replay_url']
+    puts "REPLAY UPLOADED TO #{replay_url}"
+    # TODO: fix mongo database/collection stuff
+    db.db['useruploads'].insert({'url' => replay_url, 'notif_method' => 'email', 'notif_address' => 'a@b.com'})
+    render text: "success"
+  end
+
 
   private
 

@@ -13,6 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require jquery.scrollto
+//= require s3_direct_upload
 //= require turbolinks
 //= require svg
 //= require d3

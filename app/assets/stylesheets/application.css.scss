@@ -16,7 +16,7 @@
  *= require small_hero_sheet
  *= require small_item_sheet
  *= require rune_sheet
- * require_tree .
+ * require s3_direct_upload_progress_bars
  */
 
 // prevent inline-form from stacking on narrow screen
@@ -26,10 +26,6 @@ $screen-med: 100px; // default: 970px
 // raise large screen break point from 1170 to 1366px
 $screen-lg: 1366px;
 
-.nav img {
-  height: 32px;
-  margin: 9px;
-}
-
 @import "bootstrap";
+@import "common";
 @import "matches";

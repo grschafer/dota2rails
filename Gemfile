@@ -69,14 +69,19 @@ gem 'mongo'
 gem 'bson_ext'
 
 # gon - gets data from controller into view (as json)
+# TODO: move match data to S3/Cloudfront
 gem 'gon'
 
 # unicorn http server
 gem 'unicorn'
 
+# gem for direct upload (user replays) to S3
+gem 's3_direct_upload'
+
 # http://railscasts.com/episodes/402-better-errors-railspanel?autoplay=true
 group :development do
+  gem 'debugger'
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'meta_request'
+#  gem 'meta_request'
 end

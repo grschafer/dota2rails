@@ -18,8 +18,13 @@ ns.init = ->
       formatMin(new Date(2012, 0, 1, 0, 0, d))
   ns.utils.formatTime = formatTime
 
+ns.index = ->
+  $("#s3-uploader").S3Uploader()
+
+  $("#s3-uploader").bind 's3_uploads_start', (e) ->
+    $('#upload-notiform').show()
+
 # break out into show.js.coffee?
-ns = window.DOTA2RAILS.matches
 ns.show = ->
   # get data
   # set interval, slider controls
