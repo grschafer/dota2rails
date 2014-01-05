@@ -17,12 +17,43 @@ ns.init = ->
     else
       formatMin(new Date(2012, 0, 1, 0, 0, d))
   ns.utils.formatTime = formatTime
+  ns.utils.number_regex = /^\d+$/
 
 ns.index = ->
+
+ns.mymatches = ->
   $("#s3-uploader").S3Uploader()
 
-  $("#s3-uploader").bind 's3_uploads_start', (e) ->
-    $('#upload-notiform').show()
+  makeAlert = (severity, msg) ->
+    "<div class='alert alert-#{severity}'>#{msg}</div>"
+
+  $("#s3-uploader").bind 's3_uploads_start', ->
+    $('#uploader-alerts').append(makeAlert('info', 'Replay upload started'))
+  $("#s3-uploader").bind 'ajax:success', ->
+    $('#uploader-alerts').append(makeAlert('success', 'Replay upload completed successfully'))
+  $("#s3-uploader").bind 's3_upload_failed', (e, content) ->
+    $('#uploader-alerts').append(makeAlert('danger', "#{content.filename} failed to upload : #{content.error_thrown}"))
+
+  $("#search-btn").click ->
+    match_id = $('#match-finder > input[type=text]').val()
+
+    if ns.utils.number_regex.test(match_id)
+      $("#match-finder").removeClass("has-error")
+      $.getJSON '/matchurls', {'match_id': match_id}, (data) ->
+        if data.status is "success"
+          $('#requester-alerts').append(makeAlert('success', 'Match is available!'))
+          $('#process-btn').removeAttr('disabled')
+          $('#process-btn').html("Process #{match_id}")
+          $('#process-btn').click ->
+            $.post '/request_match', match_id, (data) ->
+              if data.status is "success"
+                $('#requester-alerts').append(makeAlert('success', 'Match requested successfully'))
+        else
+          $('#requester-alerts').append(makeAlert('danger', 'Match is unavailable -- it might be invalid/private/expired or Dota 2 network is down'))
+    else
+      $("#match-finder").addClass("has-error")
+      $('#requester-alerts').append(makeAlert('danger', 'Match Id must only contain numbers'))
+
 
 # break out into show.js.coffee?
 ns.show = ->

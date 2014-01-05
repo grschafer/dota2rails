@@ -1,19 +1,39 @@
-<%= s3_uploader_form callback_url: matches_url,
-  callback_param: "replay_url",
-  acl: 'public-read',
-  id: "s3-uploader" do %>
-  <%= file_field_tag :file %>
-<% end %>
+<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#uploader-modal">
+  Upload Replay
+</button>
 
-<form id="upload-notiform" style="display:hidden;">
-  <p>TODO</p>
-</div>
+<div class="modal fade" id="uploader-modal" tabindex="-1" role="dialog" aria-labelledby="uploaderLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="uploaderLabel">Upload Replay</h4>
+      </div>
+      <div class="modal-body">
+        <p>Select a .dem file to upload for processing</p>
 
-<script id="template-upload" type="text/x-tmpl">
-<div id="file-{%=o.unique_id%}" class="upload">
-  {%=o.name%}
-  <div class="progress progress-striped active">
-    <div class="bar progress-bar" role="progressbar" style="height: 18px; width: 0%"></div>
-  </div>
-</div>
-</script>
+        <%= s3_uploader_form callback_url: matches_url,
+          callback_param: "replay_url",
+          acl: 'public-read',
+          id: "s3-uploader" do %>
+          <%= file_field_tag :file %>
+        <% end %>
+
+        <script id="template-upload" type="text/x-tmpl">
+        <div id="file-{%=o.unique_id%}" class="upload">
+          {%=o.name%}
+          <div class="progress progress-striped active">
+            <div class="bar progress-bar" role="progressbar" style="height: 18px; width: 0%"></div>
+          </div>
+        </div>
+        </script>
+
+        <div id="uploader-alerts">
+        </div>
+
+        <%= render 'notiform' %>
+
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

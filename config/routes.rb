@@ -7,6 +7,9 @@ Dota2rails::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   root 'matches#index'
+  get 'matchurls' => 'matches#matchurls'
+  post 'request_match' => 'matches#request_match'
+  get 'mymatches' => 'matches#mymatches'
 
   # authentication endpoints
   post 'auth/steam/callback' => 'auth#auth_callback'

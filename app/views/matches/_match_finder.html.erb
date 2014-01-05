@@ -1,0 +1,31 @@
+<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#match-finder-modal">
+  Add Match by Id
+</button>
+
+<div class="modal fade" id="match-finder-modal" tabindex="-1" role="dialog" aria-labelledby="matchFinderLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="matchFinderLabel">Find Match by Id</h4>
+      </div>
+      <div class="modal-body">
+        <p>Enter the match id of a recent public match to process</p>
+
+        <form class="form-inline" role="form">
+          <div class="form-group" id="match-finder">
+            <input type="text" class="form-control" placeholder="Match Id (e.g. 271145478)">
+            <button id="search-btn" type="button" class="btn btn-default">Search</button>
+            <button id="process-btn" type="button" class="btn btn-default" disabled>Process</button>
+          </div>
+        </form>
+
+        <div id="requester-alerts">
+        </div>
+
+        <%= render 'notiform' %>
+
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

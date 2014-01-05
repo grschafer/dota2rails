@@ -1,6 +1,9 @@
-<%= render 'uploader' %>
+<% if @mymatches %>
+  <%= render 'uploader' %>
+  <%= render 'match_finder' %>
+<% end %>
 
-<h1>Listing matches</h1>
+<h1>Listing <%= @mymatches ? "your " : "public " %>matches</h1>
 
 <table class="table table-hover">
   <thead>
