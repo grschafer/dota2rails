@@ -28,10 +28,11 @@
         </div>
         </script>
 
-        <div id="uploader-alerts">
-        </div>
+        <%= render partial: 'notiform', locals: {notif_type: 'url'} %>
 
-        <%= render 'notiform' %>
+
+        <div id="uploader-alerts" class="alertbox">
+        </div>
 
       </div>
     </div><!-- /.modal-content -->

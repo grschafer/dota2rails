@@ -1,3 +1,16 @@
-<form id="upload-notiform">
-  <p>notify me</p>
+<form class="form-inline upload-notiform <%= notif_type %>" role="form">
+  <p>Notify me via the following method when this replay is finished processing</p>
+
+  <%# notif_type is either
+    # - match_id (if in match_finder partial) or
+    # - url (if in uploader partial)%>
+  <input type="hidden" class="notif_type">
+  <div class="form-group">
+    <select class="form-control notif_method">
+      <option>Email</option>
+      <option>Twitter</option>
+    </select>
+    <input type="text" class="form-control notif_address" placeholder="a@b.com or @username">
+    <button type="button" class="btn btn-default notif-btn" disabled>Save Notification Info</button>
+  </div>
 </form>

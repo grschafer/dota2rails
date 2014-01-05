@@ -20,10 +20,10 @@
           </div>
         </form>
 
-        <div id="requester-alerts">
-        </div>
+        <%= render partial: 'notiform', locals: {notif_type: 'match_id'} %>
 
-        <%= render 'notiform' %>
+        <div id="requester-alerts" class="alertbox">
+        </div>
 
       </div>
     </div><!-- /.modal-content -->

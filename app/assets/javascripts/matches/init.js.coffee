@@ -21,16 +21,24 @@ ns.init = ->
 
 ns.index = ->
 
+# ugh, I should really pick up a JS framework or something
 ns.mymatches = ->
-  $("#s3-uploader").S3Uploader()
+  uploader = $("#s3-uploader").S3Uploader()
 
   makeAlert = (severity, msg) ->
     "<div class='alert alert-#{severity}'>#{msg}</div>"
+  makeNotifKey = -> (new Date()).getTime() + "-" + Math.round(Math.random() * 100000)
+  latest_notif_key = null
 
+  # TODO: add validation to only accept .dem files
   $("#s3-uploader").bind 's3_uploads_start', ->
+    latest_notif_key = makeNotifKey()
+    $('.notif_type').val(latest_notif_key)
+    uploader.additional_data({'notif_key': latest_notif_key})
     $('#uploader-alerts').append(makeAlert('info', 'Replay upload started'))
   $("#s3-uploader").bind 'ajax:success', ->
     $('#uploader-alerts').append(makeAlert('success', 'Replay upload completed successfully'))
+    $('.upload-notiform.url').find('.notif-btn').removeAttr('disabled')
   $("#s3-uploader").bind 's3_upload_failed', (e, content) ->
     $('#uploader-alerts').append(makeAlert('danger', "#{content.filename} failed to upload : #{content.error_thrown}"))
 
@@ -45,14 +53,31 @@ ns.mymatches = ->
           $('#process-btn').removeAttr('disabled')
           $('#process-btn').html("Process #{match_id}")
           $('#process-btn').click ->
-            $.post '/request_match', match_id, (data) ->
+            latest_notif_key = makeNotifKey()
+            $('.notif_type').val(latest_notif_key)
+            $.post '/request_match', {'match_id': match_id, 'notif_key': latest_notif_key}, (data) ->
               if data.status is "success"
                 $('#requester-alerts').append(makeAlert('success', 'Match requested successfully'))
+                $('.upload-notiform.match_id').find('.notif-btn').removeAttr('disabled')
+              else
+                $('#requester-alerts').append(makeAlert('danger', 'Match request failed'))
         else
           $('#requester-alerts').append(makeAlert('danger', 'Match is unavailable -- it might be invalid/private/expired or Dota 2 network is down'))
     else
       $("#match-finder").addClass("has-error")
       $('#requester-alerts').append(makeAlert('danger', 'Match Id must only contain numbers'))
+
+  $('.notif-btn').click (e) ->
+    thisForm = $(this).closest('form')
+    that = this
+    notif_key = $(thisForm).find('.notif_type').val()
+    notif_method = $(thisForm).find('.notif_method').val()
+    notif_address = $(thisForm).find('.notif_address').val()
+    req_data = {notif_method: notif_method, notif_address: notif_address, notif_key: notif_key}
+    $.post '/request_notification', req_data, (data) ->
+      if data.status is "success"
+        $(that).closest('.modal-body').find('.alertbox').append(makeAlert('success', 'You should get a message shortly!'))
+
 
 
 # break out into show.js.coffee?

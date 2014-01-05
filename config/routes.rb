@@ -9,6 +9,7 @@ Dota2rails::Application.routes.draw do
   root 'matches#index'
   get 'matchurls' => 'matches#matchurls'
   post 'request_match' => 'matches#request_match'
+  post 'request_notification' => 'matches#request_notification'
   get 'mymatches' => 'matches#mymatches'
 
   # authentication endpoints
