@@ -47,6 +47,9 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
     for scoreboard,idx in scoreboards
       break if scoreboard['time'] > time
 
+    # prevent (idx-1) being -1
+    idx = 1 if idx is 0
+
     # don't update scoreboard if we're not showing new data
     # TODO: should this instead be controlled by a separate timer in matches/init.js.coffee?
     return if idx is last_update_idx

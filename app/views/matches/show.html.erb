@@ -8,7 +8,7 @@
   <div id="playback_slider">
     <%= render partial: 'playback_slider',
         locals: {start_time: -90,
-                 end_time: @match['positions']['time'][-1]} %>
+                 end_time: @match['duration']} %>
   </div>
 </div>
 <div class="row">
@@ -41,7 +41,8 @@
   window.DOTA2RAILS || (window.DOTA2RAILS = {});
   window.DOTA2RAILS.matches || (window.DOTA2RAILS.matches = {});
   window.DOTA2RAILS.matches.heroiconpaths = {}
-  <% for hero,name in @match['player_names'] %>
+  <% for player in @match['players'] %>
+    <% hero = player['hero_name'] %>
     window.DOTA2RAILS.matches.heroiconpaths["<%= hero %>"] = '<%= asset_path "miniheroes/#{hero[14..hero.length]}.png" %>';
   <% end %>
 </script>

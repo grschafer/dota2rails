@@ -82,68 +82,73 @@ ns.mymatches = ->
 
 # break out into show.js.coffee?
 ns.show = ->
-  # get data
-  # set interval, slider controls
-  # send update func calls to components
-    # or can use events?
-  for _,component of ns.components
-    if component.hasOwnProperty('init')
-      component.init()
 
-  curTime = $('#curTime')
-  startTime = gon.match['positions']['time'][0]
-  endTime = gon.match['positions']['time'][gon.match['positions']['time'].length - 1]
-  time = startTime
-  time_interval = 1000 / 2 # interval at which to update all components by the time_delta
-  time_delta = 1 # how much ingame time to add (in seconds)
+  # get match data (~1 MB) from S3 and merge it into match metadata
+  $.getJSON gon.match['url'], (match_data) ->
+    $.extend(gon.match, match_data)
 
-  gameDuration = ns.utils.formatTime(endTime)
-  update_time_label = () ->
-    curTime.html("#{ns.utils.formatTime(time)} / #{gameDuration}")
-    slider= $('#time_slider')
-    scale = slider.width() / (endTime - startTime)
-    leftOffset = (time + 90) * scale - 42 # 42 is half-width of text "01:23 / 45:67"
-    curTime.css('left', leftOffset)
-  window.onresize = ->
-    update_time_label()
-
-  update_wrapper = ->
-    $('#time_slider').val(time)
-    update_time_label()
-    #console.log time
+    # get data
+    # set interval, slider controls
+    # send update func calls to components
+      # or can use events?
     for _,component of ns.components
-      #data = component.prep_data(match)
-      component.update(time, time_interval)
-    $('#play_pause').click() if time > endTime
-  time_wrapper = ->
-    time += time_delta # how much ingame time to add (in seconds)
-    update_wrapper()
-  timer = setInterval time_wrapper, time_interval
+      if component.hasOwnProperty('init')
+        component.init()
 
-  # TODO: DRY THIS STATE, it's checked everywhere below
-  play_btn_state = 'playing'
+    curTime = $('#curTime')
+    startTime = gon.match['positions']['time'][0]
+    endTime = gon.match['positions']['time'][gon.match['positions']['time'].length - 1]
+    time = startTime
+    time_interval = 1000 / 2 # interval at which to update all components by the time_delta
+    time_delta = 1 # how much ingame time to add (in seconds)
 
-  $('#time_slider').change ->
-    time = parseInt($(this).val())
-    update_time_label()
-    update_wrapper()
+    gameDuration = ns.utils.formatTime(endTime)
+    update_time_label = () ->
+      curTime.html("#{ns.utils.formatTime(time)} / #{gameDuration}")
+      slider= $('#time_slider')
+      scale = slider.width() / (endTime - startTime)
+      leftOffset = (time + 90) * scale - 42 # 42 is half-width of text "01:23 / 45:67"
+      curTime.css('left', leftOffset)
+    window.onresize = ->
+      update_time_label()
 
-    if play_btn_state is 'playing'
-      clearInterval(timer)
-      timer = setInterval time_wrapper, time_interval
+    update_wrapper = ->
+      $('#time_slider').val(time)
+      update_time_label()
+      #console.log time
+      for _,component of ns.components
+        #data = component.prep_data(match)
+        component.update(time, time_interval)
+      $('#play_pause').click() if time > endTime
+    time_wrapper = ->
+      time += time_delta # how much ingame time to add (in seconds)
+      update_wrapper()
+    timer = setInterval time_wrapper, time_interval
 
-  $('#play_pause').click ->
-    if play_btn_state is 'playing'
-      clearInterval(timer)
-    else if play_btn_state is 'paused'
-      timer = setInterval time_wrapper, time_interval
+    # TODO: DRY THIS STATE, it's checked everywhere below
+    play_btn_state = 'playing'
 
-    $(this).children().toggleClass('hide')
-    play_btn_state = if play_btn_state is 'paused' then 'playing' else 'paused'
+    $('#time_slider').change ->
+      time = parseInt($(this).val())
+      update_time_label()
+      update_wrapper()
 
-  $('#replay_speed').change ->
-    time_interval = 1000 / parseInt($(this).val())
-    if play_btn_state is 'playing'
-      clearInterval(timer)
-      timer = setInterval time_wrapper, time_interval
+      if play_btn_state is 'playing'
+        clearInterval(timer)
+        timer = setInterval time_wrapper, time_interval
+
+    $('#play_pause').click ->
+      if play_btn_state is 'playing'
+        clearInterval(timer)
+      else if play_btn_state is 'paused'
+        timer = setInterval time_wrapper, time_interval
+
+      $(this).children().toggleClass('hide')
+      play_btn_state = if play_btn_state is 'paused' then 'playing' else 'paused'
+
+    $('#replay_speed').change ->
+      time_interval = 1000 / parseInt($(this).val())
+      if play_btn_state is 'playing'
+        clearInterval(timer)
+        timer = setInterval time_wrapper, time_interval
 
