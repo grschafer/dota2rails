@@ -30,9 +30,9 @@
       <li><a href="/mymatches">My Matches</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <% if session.key? :current_user %>
-        <li><a href="#">Hi <%= session[:current_user][:nickname] %></a></li>
-        <li><%= image_tag session[:current_user][:image] %></li>
+      <% if session.key? :user %>
+        <li><a href="#">Hi <%= session[:user][:nickname] %></a></li>
+        <li><%= image_tag session[:user][:image], class: 'avatar' %></li>
         <li><a href="/logout">Logout</a></li>
       <% else %>
         <li><%= link_to image_tag("http://cdn.steamcommunity.com/public/images/signinthroughsteam/sits_small.png"), '/auth/steam' %></li>
