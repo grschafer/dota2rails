@@ -1,0 +1,10 @@
+<h1>Listing your matches</h1>
+
+<%= render 'uploader' %>
+<%= render 'match_finder' %>
+
+<% if @matches.length > 0 %>
+  <%= render 'matchlist' %>
+<% else %>
+  <h2>You haven't uploaded or requested any matches</h2>
+<% end %>

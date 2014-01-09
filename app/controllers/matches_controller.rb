@@ -1,28 +1,27 @@
 require 'json'
 
 class MatchesController < ApplicationController
-  before_action :set_match, except: [:index]
+  before_action :authenticated, only: [:mymatches, :matchurls, :request_match, :request_notification, :create]
+  before_action :match_authorized, only: [:show]
 
   @@matchurls_regex = Regexp.new('http.*?\.dem\.bz2')
 
   # GET /matches
   # GET /matches.json
   def index
-    @matches = db.find().to_a
+    @matches = db.find({'requester' => 'public'}).to_a
   end
 
   def mymatches
-    # TODO: mymatches filtered by matches this user's steamid is in
-    #       OR matches requested by this user (might upload a replay they're not in)
-    @matches = db.find({'duration' => {'$lt' => 2000}}).to_a
-    @mymatches = true
-    render :index
+    # shows matches current user played in or requested
+    @matches = db.find({'$or' => [{'requester' => session[:user][:uid]},
+                                  {'players.account_id' => session[:user][:uid]}]}).to_a
   end
 
   # GET /matches/1
   # GET /matches/1.json
   def show
-    # TODO: authentication
+    @match = db.find_one({'match_id' => params[:id].to_i})
     gon.match = @match
     respond_to do |format|
       format.html
@@ -32,66 +31,91 @@ class MatchesController < ApplicationController
 
   def matchurls
     # TODO: require authentication (confirm user_id in post matches session? make POST synchronous?)
-    # TODO: rate limit this per-session?
-    # TODO: check if in matches db (match already processed, add this user to access list if not public?)
-    url = URI.parse("http://localhost:3100/tools/matchurls?matchid=#{request.params['match_id']}")
+    # TODO: rate limit this per-session?  # https://github.com/kickstarter/rack-attack
+    url = URI.parse("http://localhost:3100/tools/matchurls?matchid=#{params['match_id']}")
     res = Net::HTTP::get(url)
     match = @@matchurls_regex.match(res)
     if match.nil?
-      render json: {'status' => 'failure'}
+      render json: {'status' => 'failure', 'msg' => 'Match is unavailable -- it might be invalid/private/expired or Dota 2 network is down'}
     else
-      render json: {'status' => 'success'}
+      render json: {'status' => 'success', 'msg' => 'Match is available!'}
     end
   end
 
   def request_match
-    # TODO: prevent duplicate match requests
-    puts request
-    db.db['useruploads'].insert({'match_id' => request.params['match_id'],
-                                 'notif_key' => request.params['notif_key'],
-                                 'requesting_user' => session[:current_user][:uid]})
-    render json: {'status' => 'success'}
+    # TODO: rate limit this per-session?  # https://github.com/kickstarter/rack-attack
+    # prevent duplicate match requests
+    exists = db.find({'match_id' => params['match_id']})
+    if exists and exists.count > 0
+      render json: {'status' => 'failure', 'msg' => 'Match already exists in database'}
+      return
+    end
+
+    # check valve api for that match to make sure requesting_user was in the match
+    url = URI.parse("http://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/v1?key=#{ENV['STEAM_WEB_API_KEY']}&match_id=#{params['match_id']}")
+    res = Net::HTTP::get(url)
+    match_details = JSON.load(res)['result']
+    if match_details.key?('error') || !match_details.key?('players')
+      render json: {'status' => 'failure', 'msg' => 'Error getting match details'}
+      return
+    end
+    if !match_details['players'].any? { |p| p['account_id'] == session[:user][:uid] }
+      render json: {'status' => 'failure', 'msg' => "You requested a match that you didn't play in"}
+      return
+    end
+
+    db.db['useruploads'].insert({'match_id' => params['match_id'],
+                                 'notif_key' => params['notif_key'],
+                                 'requesting_user' => session[:user][:uid]})
+    render json: {'status' => 'success', 'msg' => 'Match requested successfully'}
   end
 
   def request_notification
-    cur_user = session[:current_user][:uid]
-    notif_key = request.params['notif_key']
-    notif_method = request.params['notif_method']
-    notif_address = request.params['notif_address']
+    cur_user = session[:user][:uid]
+    notif_key = params['notif_key']
+    notif_method = params['notif_method']
+    notif_address = params['notif_address']
     db.db['useruploads'].update({'notif_key' => notif_key, 'requesting_user' => cur_user},
                                 {'$set' => {'notif_method' => notif_method,
                                             'notif_address' => notif_address}})
-    render json: {'status' => 'success'}
+    render json: {'status' => 'success', 'msg' => 'You should get a message shortly!'}
   end
 
   # POST /matches
   # for newly-uploaded replay
   def create
     # TODO: add validation to only allow uploading .dem files (would be in JS)
-    # TODO: kick off celery task
+    # TODO: kick off celery task (currently runs periodically via celery-beat)
     # TODO: prevent duplicate uploads
-    replay_url = request.params['replay_url']
+
+    replay_url = params['replay_url']
     puts "REPLAY UPLOADED TO #{replay_url}"
     # TODO: fix mongo database/collection stuff
     db.db['useruploads'].insert({'url' => replay_url,
-                                 'notif_key' => request.params['notif_key'],
-                                 'requesting_user' => session[:current_user][:uid]})
+                                 'notif_key' => params['notif_key'],
+                                 'requesting_user' => session[:user][:uid]})
     render json: {'status' => "success"}
   end
 
 
   private
 
-    # Use callbacks to share common setup or constraints between actions.
-    # TODO: CACHE MATCH
-    def set_match
-      @match = db.find_one({'match_id' => params[:id].to_i})
+    # TODO: cache for matches?
 
-      #json = nil
-      #open("app/assets/json/test_match.js") do |f|
-      #  json = f.gets
-      #end
-      #json = JSON.parse(json)
-      #@match ||= json
+    def authenticated
+      if !session.key? :user
+        render file: File.join(Rails.root, 'public/403.html'), status: 403, layout: "application"
+      end
+    end
+    def match_authorized
+      # user must be in @match['players'] unless they uploaded replay file
+      #   don't want to let people request any replay and see it (anonymous players)
+      # this is enforced when a match is requested
+      unless @match['requester'] == 'public' ||
+         (session.key?(:user) &&
+           (@match['requester'] == session[:user][:uid] ||
+            @match['players'].any? { |p| p['account_id'] == session[:user][:uid] }))
+        render file: File.join(Rails.root, 'public/403.html'), status: 403, layout: "application"
+      end
     end
 end

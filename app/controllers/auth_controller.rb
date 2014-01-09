@@ -4,14 +4,14 @@ class AuthController < ApplicationController
 
   def auth_callback
     auth = request.env['omniauth.auth']
-    session[:current_user] = { :nickname => auth.info['nickname'],
-                               :image => auth.info['image'],
-                               :uid => auth.uid }
+    session[:user] = { :nickname => auth.info['nickname'],
+                       :image => auth.info['image'],
+                       :uid => auth.uid }
     redirect_to root_url
   end
 
   def logout
-    session.delete(:current_user)
+    session.delete(:user)
     redirect_to root_url
   end
 end

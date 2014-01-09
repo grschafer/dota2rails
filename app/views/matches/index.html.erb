@@ -1,34 +1,3 @@
-<% if @mymatches %>
-  <%= render 'uploader' %>
-  <%= render 'match_finder' %>
-<% end %>
+<h1>Listing public matches</h1>
 
-<h1>Listing <%= @mymatches ? "your " : "public " %>matches</h1>
-
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th>Match</th>
-      <th>Date</th>
-      <th>Radiant</th>
-      <th>Dire</th>
-      <th>Duration</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @matches.sort { |x,y| x['match_id'] <=> y['match_id']}.each do |match| %>
-      <tr style="cursor: pointer;" onclick="document.location = '<%= match_url(match['match_id']) %>';">
-        <td><%= match['match_id'] %></td>
-        <td><%= unix_to_rfc822(match['start_time']) %></td>
-        <td><%= content_tag(match['radiant_win'] ? :strong : :p, match['radiant_name']) %></td>
-        <td><%= content_tag(match['radiant_win'] ? :p : :strong, match['dire_name']) %></td>
-        <td><%= sec_to_hms(match['duration']) %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
-
-<!-- <%= link_to 'New Match', new_match_path %> -->
+<%= render 'matchlist' %>

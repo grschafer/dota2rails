@@ -49,7 +49,7 @@ ns.mymatches = ->
       $("#match-finder").removeClass("has-error")
       $.getJSON '/matchurls', {'match_id': match_id}, (data) ->
         if data.status is "success"
-          $('#requester-alerts').append(makeAlert('success', 'Match is available!'))
+          $('#requester-alerts').append(makeAlert('success', data.msg))
           $('#process-btn').removeAttr('disabled')
           $('#process-btn').html("Process #{match_id}")
           $('#process-btn').click ->
@@ -57,12 +57,12 @@ ns.mymatches = ->
             $('.notif_type').val(latest_notif_key)
             $.post '/request_match', {'match_id': match_id, 'notif_key': latest_notif_key}, (data) ->
               if data.status is "success"
-                $('#requester-alerts').append(makeAlert('success', 'Match requested successfully'))
+                $('#requester-alerts').append(makeAlert('success', data.msg))
                 $('.upload-notiform.match_id').find('.notif-btn').removeAttr('disabled')
               else
-                $('#requester-alerts').append(makeAlert('danger', 'Match request failed'))
+                $('#requester-alerts').append(makeAlert('danger', data.msg))
         else
-          $('#requester-alerts').append(makeAlert('danger', 'Match is unavailable -- it might be invalid/private/expired or Dota 2 network is down'))
+          $('#requester-alerts').append(makeAlert('danger', data.msg))
     else
       $("#match-finder").addClass("has-error")
       $('#requester-alerts').append(makeAlert('danger', 'Match Id must only contain numbers'))
@@ -76,7 +76,9 @@ ns.mymatches = ->
     req_data = {notif_method: notif_method, notif_address: notif_address, notif_key: notif_key}
     $.post '/request_notification', req_data, (data) ->
       if data.status is "success"
-        $(that).closest('.modal-body').find('.alertbox').append(makeAlert('success', 'You should get a message shortly!'))
+        $(that).closest('.modal-body').find('.alertbox').append(makeAlert('success', data.msg))
+      else
+        $(that).closest('.modal-body').find('.alertbox').append(makeAlert('danger', 'Registering notification failed'))
 
 
 
