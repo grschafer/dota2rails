@@ -11,6 +11,7 @@ Dota2rails::Application.routes.draw do
   post 'request_match' => 'matches#request_match'
   post 'request_notification' => 'matches#request_notification'
   get 'mymatches' => 'matches#mymatches'
+  post 'filter' => 'matches#filter'
 
   # authentication endpoints
   post 'auth/steam/callback' => 'auth#auth_callback'

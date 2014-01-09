@@ -19,10 +19,18 @@ ns.init = ->
   ns.utils.formatTime = formatTime
   ns.utils.number_regex = /^\d+$/
 
+init_filter_form = ->
+  $('#filter_form_submit').click ->
+    $.post '/filter', $('#filter_form').serialize(), (data) ->
+      # replace results pane with returned rendered matchlist
+      $('table').replaceWith(data)
+
 ns.index = ->
+  init_filter_form()
 
 # ugh, I should really pick up a JS framework or something
 ns.mymatches = ->
+  init_filter_form()
   uploader = $("#s3-uploader").S3Uploader()
 
   makeAlert = (severity, msg) ->

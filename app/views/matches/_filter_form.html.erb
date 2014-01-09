@@ -1,0 +1,25 @@
+<div class="panel panel-default">
+  <form class="form-inline" role="form" id="filter_form">
+    <div class="form-group">
+      <%= render 'hero_dropdown' %>
+
+      <input name="player" type="text" class="form-control" placeholder="Player Name">
+
+      <select name="league" class="form-control">
+        <option value="all" selected>All Leagues</option>
+        <% for league in @leagues %>
+          <option value="<%= league['leagueid'] %>"><%= league['name'] %></option>
+        <% end %>
+      </select>
+
+      <select name="team" class="form-control">
+        <option value="all" selected>All Teams</option>
+        <% for team in @teams %>
+          <option value="<%= team %>"><%= team %></option>
+        <% end %>
+      </select>
+
+      <button id="filter_form_submit" type="button" class="btn btn-primary">Filter Matches</button>
+    </div>
+  </form>
+</div>

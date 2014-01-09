@@ -2,6 +2,7 @@ require 'json'
 
 class MatchesController < ApplicationController
   before_action :authenticated, only: [:mymatches, :matchurls, :request_match, :request_notification, :create]
+  before_action :set_match, only: [:show]
   before_action :match_authorized, only: [:show]
 
   @@matchurls_regex = Regexp.new('http.*?\.dem\.bz2')
@@ -10,18 +11,38 @@ class MatchesController < ApplicationController
   # GET /matches.json
   def index
     @matches = db.find({'requester' => 'public'}).to_a
+    make_filter_dropdowns(@matches)
   end
 
   def mymatches
     # shows matches current user played in or requested
     @matches = db.find({'$or' => [{'requester' => session[:user][:uid]},
                                   {'players.account_id' => session[:user][:uid]}]}).to_a
+    make_filter_dropdowns(@matches)
+  end
+
+  def filter
+    hero = params[:hero]
+    player = params[:player]
+    league = params[:league]
+    team = params[:team]
+
+    criteria = {}
+    criteria['players.hero_name'] = hero if hero != 'all'
+    criteria['players.player_name'] = {'$regex' => "#{player}", '$options' => 'i'} if !player.empty?
+    criteria['leagueid'] = league.to_i if league != 'all'
+    criteria['$or'] = [{'radiant_name' => team}, {'dire_name' => team}] if team != 'all'
+    puts hero, player, league, team
+    puts "criteria: #{criteria}"
+    @matches = db.find(criteria).to_a
+    puts "matches: #{@matches}"
+
+    render :partial => 'matchlist'
   end
 
   # GET /matches/1
   # GET /matches/1.json
   def show
-    @match = db.find_one({'match_id' => params[:id].to_i})
     gon.match = @match
     respond_to do |format|
       format.html
@@ -102,6 +123,9 @@ class MatchesController < ApplicationController
 
     # TODO: cache for matches?
 
+    def set_match
+      @match = db.find_one({'match_id' => params[:id].to_i})
+    end
     def authenticated
       if !session.key? :user
         render file: File.join(Rails.root, 'public/403.html'), status: 403, layout: "application"
@@ -117,5 +141,17 @@ class MatchesController < ApplicationController
             @match['players'].any? { |p| p['account_id'] == session[:user][:uid] }))
         render file: File.join(Rails.root, 'public/403.html'), status: 403, layout: "application"
       end
+    end
+
+    def make_filter_dropdowns(matches)
+      league_ids = matches.uniq { |x| x['leagueid'] }.map { |x| x['leagueid'] }
+      leagues = db.db['leagues'].find({'leagueid' => {'$in' => league_ids}},
+                                      {:fields => {'_id' => 0, 'leagueid' => 1, 'name' => 1}})
+      rteams = matches.uniq { |x| x['radiant_name'] }.map { |x| x['radiant_name'] }
+      dteams = matches.uniq { |x| x['dire_name'] }.map { |x| x['dire_name'] }
+      teams = rteams + dteams
+
+      @leagues = leagues
+      @teams = teams
     end
 end
