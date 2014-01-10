@@ -34,6 +34,12 @@ div.new-match-btns {
   }
 }
 
+// stacks hero icons horizontally on index pages
+table.matchlist div[class^="npc_dota_hero"] {
+  float: left;
+  zoom: 0.7;
+}
+
 // ===== shared =====
 .float_lg {
   @include for-layout(wide) { float: left; }

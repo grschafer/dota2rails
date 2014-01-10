@@ -12,7 +12,7 @@ module MatchesHelper
   end
 
   # TODO: refinement of fixnum?
-  def unix_to_rfc822(timestamp)
-    DateTime.strptime(timestamp.to_s, '%s').to_formatted_s(:rfc822)
+  def unix_to_date(timestamp)
+    DateTime.strptime(timestamp.to_s, '%s').to_s(:db)
   end
 end

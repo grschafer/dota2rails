@@ -7,6 +7,9 @@ class MatchesController < ApplicationController
 
   @@matchurls_regex = Regexp.new('http.*?\.dem\.bz2')
 
+  # TODO: clean up make_filter_dropdowns and @league_hash
+  #       not DRY and extra unnecessary work being done in filter method
+
   # GET /matches
   # GET /matches.json
   def index
@@ -41,6 +44,9 @@ class MatchesController < ApplicationController
     @matches = db.find(criteria).to_a
     puts "matches: #{@matches}"
 
+    make_filter_dropdowns(@matches)
+    @league_hash = Hash[@leagues.map { |x| x.values }]
+    @league_hash.default = "None"
     render :partial => 'matchlist'
   end
 
@@ -147,6 +153,7 @@ class MatchesController < ApplicationController
       end
     end
 
+    # TODO: clean up make_filter_dropdowns and @league_hash
     def make_filter_dropdowns(matches)
       league_ids = matches.uniq { |x| x['leagueid'] }.map { |x| x['leagueid'] }
       leagues = db.db['leagues'].find({'leagueid' => {'$in' => league_ids}},
