@@ -3,6 +3,7 @@
     <tr>
       <th>Match</th>
       <th>Date</th>
+      <th>League</th>
       <th>Radiant</th>
       <th>Dire</th>
       <th>Duration</th>
@@ -14,6 +15,7 @@
       <tr style="cursor: pointer;" onclick="document.location = '<%= match_url(match['match_id']) %>';">
         <td><%= match['match_id'] %></td>
         <td><%= unix_to_rfc822(match['start_time']) %></td>
+        <td><%= @league_hash[match['leagueid']] %></td>
         <td><%= content_tag(match['radiant_win'] ? :strong : :p, match['radiant_name']) %></td>
         <td><%= content_tag(match['radiant_win'] ? :p : :strong, match['dire_name']) %></td>
         <td><%= sec_to_hms(match['duration']) %></td>

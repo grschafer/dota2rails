@@ -22,6 +22,18 @@ $break-large: $screen-lg; // $screen-lg defined in application.css.scss as 1366p
   @include for-layout(wide) { max-width: $break-large; }
 }
 
+// ===== index pages =====
+div.new-match-btns {
+  text-align: right;
+  margin-top: 30px;
+  .btn-modal {
+    margin-bottom: 5px;
+  }
+  .modal {
+    text-align: left;
+  }
+}
+
 // ===== shared =====
 .float_lg {
   @include for-layout(wide) { float: left; }

@@ -12,6 +12,8 @@ class MatchesController < ApplicationController
   def index
     @matches = db.find({'requester' => 'public'}).to_a
     make_filter_dropdowns(@matches)
+    @league_hash = Hash[@leagues.map { |x| x.values }]
+    @league_hash.default = "None"
   end
 
   def mymatches
@@ -19,6 +21,8 @@ class MatchesController < ApplicationController
     @matches = db.find({'$or' => [{'requester' => session[:user][:uid]},
                                   {'players.account_id' => session[:user][:uid]}]}).to_a
     make_filter_dropdowns(@matches)
+    @league_hash = Hash[@leagues.map { |x| x.values }]
+    @league_hash.default = "None"
   end
 
   def filter
@@ -146,7 +150,7 @@ class MatchesController < ApplicationController
     def make_filter_dropdowns(matches)
       league_ids = matches.uniq { |x| x['leagueid'] }.map { |x| x['leagueid'] }
       leagues = db.db['leagues'].find({'leagueid' => {'$in' => league_ids}},
-                                      {:fields => {'_id' => 0, 'leagueid' => 1, 'name' => 1}})
+                              {:fields => {'_id' => 0, 'leagueid' => 1, 'name' => 1}}).to_a
       rteams = matches.uniq { |x| x['radiant_name'] }.map { |x| x['radiant_name'] }
       dteams = matches.uniq { |x| x['dire_name'] }.map { |x| x['dire_name'] }
       teams = rteams + dteams

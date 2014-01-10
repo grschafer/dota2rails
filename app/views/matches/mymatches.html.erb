@@ -1,9 +1,15 @@
-<h1>Listing your matches</h1>
+<div class="container">
 
-<p>inline buttons with above header</p>
+  <div class="row">
+    <div class="col-xs-8">
+      <h1>Your matches</h1>
+    </div>
+    <div class="col-xs-4 new-match-btns">
+      <%= render 'uploader' %>
+      <%= render 'match_finder' %>
+    </div>
+  </div>
 
-<%= render 'uploader' %>
-<%= render 'match_finder' %>
 
 <%= render 'filter_form' %>
 
@@ -12,3 +18,4 @@
 <% else %>
   <h2>You haven't uploaded or requested any matches</h2>
 <% end %>
+</div>
