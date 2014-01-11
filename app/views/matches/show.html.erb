@@ -2,6 +2,16 @@
 
 <div class="container">
 <div class="row">
+  <div class="float_lg">
+    <h3 id="heading">Loading 
+      <%= image_tag("ajax-loader.gif", class: "spinner") %>
+    </h3>
+  </div>
+  <div class="float_lg">
+    <%= render 'share' %>
+  </div>
+</div>
+<div class="row">
   <div id="playback_controls">
     <%= render 'playback_controls' %>
   </div>

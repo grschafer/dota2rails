@@ -145,11 +145,18 @@ class MatchesController < ApplicationController
       # user must be in @match['players'] unless they uploaded replay file
       #   don't want to let people request any replay and see it (anonymous players)
       # this is enforced when a match is requested
-      unless @match['requester'] == 'public' ||
-         (session.key?(:user) &&
-           (@match['requester'] == session[:user][:uid] ||
-            @match['players'].any? { |p| p['account_id'] == session[:user][:uid] }))
-        render file: File.join(Rails.root, 'public/403.html'), status: 403, layout: "application"
+
+      # if match was requested with ?h=<_id> then it's a shared link,
+      # for sending to steam friends
+      if params[:h] == @match['_id'].to_s
+        # TODO: check that the logged-in user is friend of that match's requester
+      else
+        unless @match['requester'] == 'public' ||
+           (session.key?(:user) &&
+             (@match['requester'] == session[:user][:uid] ||
+              @match['players'].any? { |p| p['account_id'] == session[:user][:uid] }))
+          render file: File.join(Rails.root, 'public/403.html'), status: 403, layout: "application"
+        end
       end
     end
 

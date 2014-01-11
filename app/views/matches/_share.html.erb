@@ -1,0 +1,25 @@
+<button class="btn btn-primary btn-share btn-modal">
+  <span class="glyphicon glyphicon-link"></span> Share
+</button>
+
+<div class="modal fade" id="share-modal" tabindex="-1" role="dialog" aria-labelledby="shareLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="shareLabel">Share Replay</h4>
+      </div>
+      <div class="modal-body">
+        <p>Send the below link to Steam friends to share this page</p>
+
+        <% url_options = {:controller => 'matches', :action => 'show', :only_path => false} %>
+        <% url_options[:h] = @match['_id'] if @match['requester'] != 'public' %>
+        <% pagelink = url_for url_options %>
+        <div class="form-group">
+          <input type="text" id="share-text" class="form-control" value="<%= pagelink %>" />
+        </div>
+
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

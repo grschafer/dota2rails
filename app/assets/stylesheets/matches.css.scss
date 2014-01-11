@@ -44,6 +44,17 @@ table.matchlist div[class^="npc_dota_hero"] {
 .float_lg {
   @include for-layout(wide) { float: left; }
 }
+.spinner {
+  margin-left: 4px;
+}
+.alertbox {
+  margin-top: 12px;
+}
+
+// ===== top of match/show page =====
+.btn-share {
+  margin: 15px 0 0 15px;
+}
 
 // ===== playback controls =====
 #curTime {

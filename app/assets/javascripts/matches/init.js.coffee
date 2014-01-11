@@ -31,6 +31,15 @@ ns.index = ->
 # ugh, I should really pick up a JS framework or something
 ns.mymatches = ->
   init_filter_form()
+
+  $(document)
+    .ajaxStart( ->
+      $('.spinner').show()
+    )
+    .ajaxStop( ->
+      $('.spinner').hide()
+    )
+
   uploader = $("#s3-uploader").S3Uploader()
 
   makeAlert = (severity, msg) ->
@@ -96,6 +105,14 @@ ns.show = ->
   # get match data (~1 MB) from S3 and merge it into match metadata
   $.getJSON gon.match['url'], (match_data) ->
     $.extend(gon.match, match_data)
+
+    $('.spinner').hide()
+    $('#heading').text('Match ' + gon.match['match_id'])
+
+    $('.btn-share').click ->
+      $('#share-modal').modal('show')
+      $('#share-text').focus()
+      $('#share-text').select()
 
     # get data
     # set interval, slider controls
