@@ -1,5 +1,13 @@
 <div class="container">
 
+  <% if !@queued_matches.empty? %>
+    <div class="row">
+      <div class="col-xs-12">
+        <p>Matches currently queued/processing: <%= @queued_matches.join(', ') %></p>
+      </div>
+    </div>
+  <% end %>
+
   <div class="row">
     <div class="col-xs-5">
       <h1>Your matches</h1>
@@ -11,11 +19,11 @@
   </div>
 
 
-<%= render 'filter_form' %>
+  <%= render 'filter_form' %>
 
-<% if @matches.length > 0 %>
-  <%= render 'matchlist' %>
-<% else %>
-  <h2>You haven't uploaded or requested any matches</h2>
-<% end %>
+  <% if @matches.length > 0 %>
+    <%= render 'matchlist' %>
+  <% else %>
+    <h2>You haven't uploaded or requested any matches</h2>
+  <% end %>
 </div>

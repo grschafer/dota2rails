@@ -6,6 +6,7 @@ class MatchesController < ApplicationController
   before_action :match_authorized, only: [:show]
 
   @@matchurls_regex = Regexp.new('http.*?\.dem\.bz2')
+  @@url_matchid_regex = Regexp.new('.*?(\d+.dem)$')
 
   # TODO: clean up make_filter_dropdowns and @league_hash
   #       not DRY and extra unnecessary work being done in filter method
@@ -26,6 +27,16 @@ class MatchesController < ApplicationController
     make_filter_dropdowns(@matches)
     @league_hash = Hash[@leagues.map { |x| x.values }]
     @league_hash.default = "None"
+
+    @queued_matches = db.db['useruploads'].find({'requesting_user' => session[:user][:uid]},
+                              {:fields => {'_id' => 0, 'match_id' => 1, 'url' => 1}}).to_a
+    @queued_matches.map! do |m|
+      if m.key?('url')
+        @@url_matchid_regex.match(m['url']).captures[0]
+      else
+        m['match_id']
+      end
+    end
   end
 
   def filter
