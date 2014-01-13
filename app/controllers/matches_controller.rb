@@ -14,7 +14,7 @@ class MatchesController < ApplicationController
   # GET /matches
   # GET /matches.json
   def index
-    @matches = db.find({'requester' => 'public'}).to_a
+    @matches = match_db.find({'requester' => 'public'}).to_a
     make_filter_dropdowns(@matches)
     @league_hash = Hash[@leagues.map { |x| x.values }]
     @league_hash.default = "None"
@@ -22,13 +22,13 @@ class MatchesController < ApplicationController
 
   def mymatches
     # shows matches current user played in or requested
-    @matches = db.find({'$or' => [{'requester' => session[:user][:uid]},
+    @matches = match_db.find({'$or' => [{'requester' => session[:user][:uid]},
                                   {'players.account_id' => session[:user][:uid]}]}).to_a
     make_filter_dropdowns(@matches)
     @league_hash = Hash[@leagues.map { |x| x.values }]
     @league_hash.default = "None"
 
-    @queued_matches = db.db['useruploads'].find({'requesting_user' => session[:user][:uid]},
+    @queued_matches = userupload_db.find({'requesting_user' => session[:user][:uid]},
                               {:fields => {'_id' => 0, 'match_id' => 1, 'url' => 1}}).to_a
     @queued_matches.map! do |m|
       if m.key?('url')
@@ -52,7 +52,7 @@ class MatchesController < ApplicationController
     criteria['$or'] = [{'radiant_name' => team}, {'dire_name' => team}] if team != 'all'
     puts hero, player, league, team
     puts "criteria: #{criteria}"
-    @matches = db.find(criteria).to_a
+    @matches = match_db.find(criteria).to_a
     puts "matches: #{@matches}"
 
     make_filter_dropdowns(@matches)
@@ -87,7 +87,7 @@ class MatchesController < ApplicationController
   def request_match
     # TODO: rate limit this per-session?  # https://github.com/kickstarter/rack-attack
     # prevent duplicate match requests
-    exists = db.find({'match_id' => params['match_id']})
+    exists = match_db.find({'match_id' => params['match_id']})
     if exists and exists.count > 0
       render json: {'status' => 'failure', 'msg' => 'Match already exists in database'}
       return
@@ -106,7 +106,7 @@ class MatchesController < ApplicationController
       return
     end
 
-    db.db['useruploads'].insert({'match_id' => params['match_id'],
+    userupload_db.insert({'match_id' => params['match_id'],
                                  'notif_key' => params['notif_key'],
                                  'requesting_user' => session[:user][:uid]})
     render json: {'status' => 'success', 'msg' => 'Match requested successfully'}
@@ -117,7 +117,7 @@ class MatchesController < ApplicationController
     notif_key = params['notif_key']
     notif_method = params['notif_method']
     notif_address = params['notif_address']
-    db.db['useruploads'].update({'notif_key' => notif_key, 'requesting_user' => cur_user},
+    userupload_db.update({'notif_key' => notif_key, 'requesting_user' => cur_user},
                                 {'$set' => {'notif_method' => notif_method,
                                             'notif_address' => notif_address}})
     render json: {'status' => 'success', 'msg' => 'You should get a message shortly!'}
@@ -133,7 +133,7 @@ class MatchesController < ApplicationController
     replay_url = params['replay_url']
     puts "REPLAY UPLOADED TO #{replay_url}"
     # TODO: fix mongo database/collection stuff
-    db.db['useruploads'].insert({'url' => replay_url,
+    userupload_db.insert({'url' => replay_url,
                                  'notif_key' => params['notif_key'],
                                  'requesting_user' => session[:user][:uid]})
     render json: {'status' => "success"}
@@ -145,7 +145,7 @@ class MatchesController < ApplicationController
     # TODO: cache for matches?
 
     def set_match
-      @match = db.find_one({'match_id' => params[:id].to_i})
+      @match = match_db.find_one({'match_id' => params[:id].to_i})
     end
     def authenticated
       if !session.key? :user
@@ -174,7 +174,7 @@ class MatchesController < ApplicationController
     # TODO: clean up make_filter_dropdowns and @league_hash
     def make_filter_dropdowns(matches)
       league_ids = matches.uniq { |x| x['leagueid'] }.map { |x| x['leagueid'] }
-      leagues = db.db['leagues'].find({'leagueid' => {'$in' => league_ids}},
+      leagues = league_db.find({'leagueid' => {'$in' => league_ids}},
                               {:fields => {'_id' => 0, 'leagueid' => 1, 'name' => 1}}).to_a
       rteams = matches.uniq { |x| x['radiant_name'] }.map { |x| x['radiant_name'] }
       dteams = matches.uniq { |x| x['dire_name'] }.map { |x| x['dire_name'] }

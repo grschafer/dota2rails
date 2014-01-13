@@ -6,5 +6,23 @@
 # STRIPE_API_KEY: EdAvEPVEC3LuaTg5Q3z6WbDVqZlcBQ8Z
 # STRIPE_PUBLIC_KEY: pk_BRgD57O8fHja9HxduJUszhef6jCyS
 
-STEAM_WEB_API_KEY: # your steam web api key
+# app secret
 SECRET_TOKEN: # your rake secret generated token
+
+# steam
+STEAM_WEB_API_KEY: # your steam web api key
+
+# db
+MONGO_HOST: # hostname/ip of mongo server
+MONGO_PORT: # port of mongo on mongo server
+# collections
+DB_NAME: 'alacrity'
+MATCH_COL: 'matches'
+LEAGUE_COL: 'leagues'
+ERRORGAME_COL: 'errorgames'
+USERUPLOAD_COL: 'useruploads'
+
+# s3
+ACCESS_KEY: # s3 user access key
+SECRET_KEY: # s3 user secret key
+BUCKET: # s3 bucket name

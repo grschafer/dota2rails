@@ -12,7 +12,19 @@ class ApplicationController < ActionController::Base
   private
 
   def db
-    MongoConfig.connection.db('alacrity').collection('matches')
+    MongoConfig.connection.db(ENV['DB_NAME'])
+  end
+  def match_db
+    db.collection(ENV['MATCH_COL'])
+  end
+  def league_db
+    db.collection(ENV['LEAGUE_COL'])
+  end
+  def errorgame_db
+    db.collection(ENV['ERRORGAME_COL'])
+  end
+  def userupload_db
+    db.collection(ENV['USERUPLOAD_COL'])
   end
 
 end
