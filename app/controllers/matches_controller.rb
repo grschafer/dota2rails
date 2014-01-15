@@ -7,6 +7,7 @@ class MatchesController < ApplicationController
 
   @@matchurls_regex = Regexp.new('http.*?\.dem\.bz2')
   @@url_matchid_regex = Regexp.new('.*?(\d+.dem)$')
+  @@steamid_32bit_mask = 2**32 - 1
 
   # TODO: clean up make_filter_dropdowns and @league_hash
   #       not DRY and extra unnecessary work being done in filter method
@@ -101,7 +102,7 @@ class MatchesController < ApplicationController
       render json: {'status' => 'failure', 'msg' => 'Error getting match details'}
       return
     end
-    if !match_details['players'].any? { |p| p['account_id'] == session[:user][:uid] }
+    if !match_details['players'].any? { |p| p['account_id'] == session[:user][:uid].to_i & @@steamid_32bit_mask }
       render json: {'status' => 'failure', 'msg' => "You requested a match that you didn't play in"}
       return
     end
