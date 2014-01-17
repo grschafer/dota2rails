@@ -6,6 +6,8 @@
   <%= csrf_meta_tags %>
   <%= include_gon %>
   <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+  <%#<%= javascript_include_tag params[:controller], "data-turbolinks-track" => true %>
+  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
   <script></script> <!-- pull ga up here -->
 
 </head>
@@ -45,8 +47,6 @@
 
 </body>
 
-<%#<%= javascript_include_tag params[:controller], "data-turbolinks-track" => true %>
-<%= javascript_include_tag "application", "data-turbolinks-track" => true %>
 <script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-44956803-1']);
