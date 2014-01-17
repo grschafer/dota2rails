@@ -16,27 +16,30 @@ class MatchesController < ApplicationController
   # GET /matches.json
   def index
     @matches = match_db.find({'requester' => 'public'}).to_a
-    make_filter_dropdowns(@matches)
-    @league_hash = Hash[@leagues.map { |x| x.values }]
-    @league_hash.default = "None"
+    if stale?(etag: @matches)
+      make_filter_dropdowns(@matches)
+      @league_hash = Hash[@leagues.map { |x| x.values }]
+      @league_hash.default = "None"
+    end
   end
 
   def mymatches
     # shows matches current user played in or requested
     @matches = match_db.find({'$or' => [{'requester' => session[:user][:uid]},
                                   {'players.account_id' => session[:user][:uid]}]}).to_a
-    make_filter_dropdowns(@matches)
-    @league_hash = Hash[@leagues.map { |x| x.values }]
-    @league_hash.default = "None"
-
-    @queued_matches = userupload_db.find({'requesting_user' => session[:user][:uid]},
-                              {:fields => {'_id' => 0, 'match_id' => 1, 'url' => 1}}).to_a
-    @queued_matches.map! do |m|
-      if m.key?('url')
-        @@url_matchid_regex.match(m['url']).captures[0]
-      else
-        m['match_id']
+    if stale?(etag:[@matches, session[:user][:uid]])
+      @queued_matches = userupload_db.find({'requesting_user' => session[:user][:uid]},
+                                {:fields => {'_id' => 0, 'match_id' => 1, 'url' => 1}}).to_a
+      @queued_matches.map! do |m|
+        if m.key?('url')
+          @@url_matchid_regex.match(m['url']).captures[0]
+        else
+          m['match_id']
+        end
       end
+      make_filter_dropdowns(@matches)
+      @league_hash = Hash[@leagues.map { |x| x.values }]
+      @league_hash.default = "None"
     end
   end
 
@@ -65,10 +68,12 @@ class MatchesController < ApplicationController
   # GET /matches/1
   # GET /matches/1.json
   def show
-    gon.match = @match
-    respond_to do |format|
-      format.html
-      format.json { render json: @match }
+    if stale?(etag: @match)
+      gon.match = @match
+      respond_to do |format|
+        format.html
+        format.json { render json: @match }
+      end
     end
   end
 

@@ -1,7 +1,13 @@
-<div class="container">
-<h1>Public matches</h1>
+<%# if number of public matches changes, cache will have a different key 
+    TODO: if pagination is added, @matches.length will be the same, so might add to
+          cache key @matches[0]['match_id'] or something like that
+%>
+<% cache [params[:controller], params[:action], @matches.length] do %>
+  <div class="container">
+  <h1>Public matches</h1>
 
-<%= render 'filter_form' %>
+  <%= render 'filter_form' %>
 
-<%= render 'matchlist' %>
-</div>
+  <%= render 'matchlist' %>
+  </div>
+<% end %>

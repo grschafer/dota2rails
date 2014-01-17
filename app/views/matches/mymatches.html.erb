@@ -8,22 +8,25 @@
     </div>
   <% end %>
 
-  <div class="row">
-    <div class="col-xs-5">
-      <h1>Your matches</h1>
+  <%# like on matches/index, beware if pagination is added %>
+  <% cache [params[:controller], params[:action], session[:user][:uid], @matches.length] do %>
+    <div class="row">
+      <div class="col-xs-5">
+        <h1>Your matches</h1>
+      </div>
+      <div class="col-xs-7 new-match-btns">
+        <%= render 'uploader' %>
+        <%= render 'match_finder' %>
+      </div>
     </div>
-    <div class="col-xs-7 new-match-btns">
-      <%= render 'uploader' %>
-      <%= render 'match_finder' %>
-    </div>
-  </div>
 
 
-  <%= render 'filter_form' %>
+    <%= render 'filter_form' %>
 
-  <% if @matches.length > 0 %>
-    <%= render 'matchlist' %>
-  <% else %>
-    <h2>You haven't uploaded or requested any matches</h2>
+    <% if @matches.length > 0 %>
+      <%= render 'matchlist' %>
+    <% else %>
+      <h2>You have no parsed replays yet</h2>
+    <% end %>
   <% end %>
 </div>
