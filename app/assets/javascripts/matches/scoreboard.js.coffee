@@ -6,7 +6,7 @@
 window.DOTA2RAILS.matches.components.scoreboard = (() ->
 
   # we want these variables to persist between init and update funcs
-  scoreboards = player_names = player_teams = last_update_idx = null
+  scoreboards = players = last_update_idx = null
   highlight_columns = null
 
   # takes thresholds and returns a function that maps a value to
@@ -26,8 +26,7 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
 
   init = ->
     scoreboards = gon.match.scoreboards
-    player_names = gon.match.player_names
-    player_teams = gon.match.player_teams
+    players = gon.match.players
     last_update_idx = null
 
     # rules for highlighting changes in columns based on magnitude of the
@@ -62,19 +61,19 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
     #console.log time
 
     data = {'radiant': [], 'dire': []}
-    for team,heroes of player_teams
-      for hero in heroes
-        s = scoreboards[idx-1][hero]
-        name = player_names[hero]
-        data[team].push [name, hero, s.l, s.k, s.d, s.a, s.i0, s.i1, s.i2, s.i3, s.i4, s.i5, s.g, s.lh, s.dn, s.gpm, s.xpm]
+    for player in players
+      hero = player['hero_name']
+      team = player['team']
+      s = scoreboards[idx-1][hero]
+      data[team].push [null, null, s.l, s.k, s.d, s.a, s.i0, s.i1, s.i2, s.i3, s.i4, s.i5, s.g, s.lh, s.dn, s.gpm, s.xpm]
 
-      # sum levels, kills, deaths, assists, gold, last hits, denies, gpm, xpm
-      summable_cols = [2,3,4,5,12,13,14,15,16]
+    # sum levels, kills, deaths, assists, gold, last hits, denies, gpm, xpm
+    summable_cols = [2,3,4,5,12,13,14,15,16]
 
-      total_row = ['Total']
-      for i in summable_cols
-        total_row[i] = data[team].reduce(((sum,row) -> sum + row[i]), 0)
-      data[team].push total_row
+    total_row = ['Total']
+    for i in summable_cols
+      total_row[i] = data[team].reduce(((sum,row) -> sum + row[i]), 0)
+    data[team].push total_row
 
     # DATA JOIN
     radtable = d3.select("#radiant_players")
@@ -83,10 +82,11 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
     radcells = radrows.selectAll("td div")
       .data((d) -> d)
 
-    # iconcells (hero and items) are in columns 1 and 6-11 of the table
-    iconcells = radcells.filter((d,i) -> i == 1 or 6 <= i <= 11 )
+    # iconcells (items) are in columns 6-11 of the table
+    iconcells = radcells.filter((d,i) -> 6 <= i <= 11 )
     iconcells.attr("class", (d) -> if (d? and d isnt 0) then "#{d}-icon" else "")
-    textcells = radcells.filter((d,i) -> i != 1 and (i < 6 or i > 11))
+    iconcells.attr("title", (d) -> if (d? and d isnt 0) then "#{d[5..]}" else "")
+    textcells = radcells.filter((d,i) -> i > 1 and (i < 6 or i > 11))
     textcells.style("background-color", (d,i) ->
       if highlight_columns[i]?
         highlight_columns[i](d - parseInt(this.textContent)) or "")
@@ -98,9 +98,10 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
     direcells = direrows.selectAll("td div")
       .data((d) -> d)
 
-    iconcells = direcells.filter((d,i) -> i == 1 or 6 <= i <= 11 )
+    iconcells = direcells.filter((d,i) -> 6 <= i <= 11 )
     iconcells.attr("class", (d) -> if (d? and d isnt 0) then "#{d}-icon" else "")
-    textcells = direcells.filter((d,i) -> i != 1 and (i < 6 or i > 11))
+    iconcells.attr("title", (d) -> if (d? and d isnt 0) then "#{d[5..]}" else "")
+    textcells = direcells.filter((d,i) -> i > 1 and (i < 6 or i > 11))
     textcells.style("background-color", (d,i) ->
       if highlight_columns[i]?
         highlight_columns[i](d - parseInt(this.textContent)) or "")

@@ -17,28 +17,24 @@
         <th style="width: 42px;">XPM</th>
       </tr>
     </thead>
-    <tbody id="<%= idx == 0 ? "radiant_players" : "dire_players" %>">
-      <% 6.times do %>
+    <% team = idx == 0 ? 'radiant' : 'dire' %>
+    <tbody id='<%= team %>_players'>
+      <% @match['players'].select { |x| x['team'] == team }.each do |player| %>
+        <% hero = player['hero_name'][14..player['hero_name'].length] %>
         <tr>
+          <td><div><%= player['player_name'] %></div></td>
+          <td><div style="padding: 0;"><%= image_tag("heroes/#{hero}.png", size: "64x32", alt: "#{hero}", title: "#{hero}") %></div></td>
+        <% 15.times do %>
           <td><div></div></td>
-          <td><div></div></td>
-          <td><div></div></td>
-          <td><div></div></td>
-          <td><div></div></td>
-          <td><div></div></td>
-          <td><div></div></td>
-          <td><div></div></td>
-          <td><div></div></td>
-          <td><div></div></td>
-          <td><div></div></td>
-          <td><div></div></td>
-          <td><div></div></td>
-          <td><div></div></td>
-          <td><div></div></td>
-          <td><div></div></td>
-          <td><div></div></td>
+        <% end %>
         </tr>
       <% end %>
+      <%# totals row: %>
+        <tr>
+        <% 17.times do %>
+          <td><div></div></td>
+        <% end %>
+        </tr>
     </tbody>
   </table>
 <% end %>

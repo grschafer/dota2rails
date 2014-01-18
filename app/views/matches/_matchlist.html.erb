@@ -20,18 +20,20 @@
         <td><%= "#{match['radiant_name']} vs #{match['dire_name']}" if match['radiant_name'] != 'Radiant' && match['dire_name'] != 'Dire' %></td>
         <td>
           <% for player in match['players'] %>
+            <% hero = player['hero_name'][14..player['hero_name'].length] %>
             <% if player['team'] == 'radiant' %>
-              <%= content_tag :div, class: "#{player['hero_name']}-icon",
-                    title: "#{player['player_name']}" do %>
+              <%= image_tag("heroes/#{hero}.png", size: "56x28",
+                            alt: "#{hero}", title: "#{player['player_name']}") do %>
               <% end %>
             <% end %>
           <% end %>
         </td>
         <td>
           <% for player in match['players'] %>
+            <% hero = player['hero_name'][14..player['hero_name'].length] %>
             <% if player['team'] == 'dire' %>
-              <%= content_tag :div, class: "#{player['hero_name']}-icon",
-                    title: "#{player['player_name']}" do %>
+              <%= image_tag("heroes/#{hero}.png", size: "56x28",
+                            alt: "#{hero}", title: "#{player['player_name']}") do %>
               <% end %>
             <% end %>
           <% end %>
