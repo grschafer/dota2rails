@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Dota2rails</title>
+  <title>dotarecap</title>
   <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
   <%= csrf_meta_tags %>
   <%= include_gon %>
@@ -22,7 +22,7 @@
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
     </button>
-    <a class="navbar-brand" href="/">Dota2Rails</a>
+    <a class="navbar-brand" href="/">dota<i>recap</i></a>
   </div>
 
   <!-- Collect the nav links, forms, and other content for toggling -->
@@ -33,7 +33,7 @@
     </ul>
     <ul class="nav navbar-nav navbar-right">
       <% if session.key? :user %>
-        <li><a href="#">Hi <%= session[:user][:nickname] %></a></li>
+        <li><a href="/mymatches">Hi <%= session[:user][:nickname] %></a></li>
         <li><%= image_tag session[:user][:image], class: 'avatar' %></li>
         <li><a href="/logout">Logout</a></li>
       <% else %>
