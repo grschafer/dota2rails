@@ -96,7 +96,7 @@ window.DOTA2RAILS.matches.components.map = (() ->
       continue if idx > positions[h].length - 1
       hero_data.push {}
       pos = world_to_img positions[h][idx][0], positions[h][idx][1]
-      team = players.filter((x) -> x['hero_name'] == h)['team']
+      team = players.filter((x) -> x['hero_name'] == h)[0]['team']
       $.extend(hero_data[i], {name: h, team: team, hp: positions[h][idx][2]}, pos)
 
     # rune data

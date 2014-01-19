@@ -34,12 +34,13 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
     # the index number refers to the index within text_cells below (which does
     # not include icon cells (hero and items))
     highlight_columns = []
-    highlight_columns[1] = colorizer(1,2,3) # levels
-    highlight_columns[2] = highlight_columns[4] = colorizer(1,2,3,4,5) # kills, assists
-    highlight_columns[3] = colorizer(1,2) # deaths
-    highlight_columns[5] = colorizer(100,300,600,1000,3000) # gold
-    highlight_columns[6] = colorizer(2,4,7,11) # last hits
-    highlight_columns[7] = colorizer(1,2,3,5) # denies
+    highlight_columns[0] = colorizer(1,2,3) # levels
+    highlight_columns[1] = \
+    highlight_columns[3] = colorizer(1,2,3,4,5) # kills, assists
+    highlight_columns[2] = colorizer(1,2) # deaths
+    highlight_columns[4] = colorizer(100,300,600,1000,3000) # gold
+    highlight_columns[5] = colorizer(2,4,7,11) # last hits
+    highlight_columns[6] = colorizer(1,2,3,5) # denies
 
 
   update = (time) ->
@@ -61,6 +62,7 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
     #console.log time
 
     data = {'radiant': [], 'dire': []}
+    # assumes players are in team order (player indices 0-4 are radiant, 5-9 are dire)
     for player in players
       hero = player['hero_name']
       team = player['team']
@@ -70,10 +72,11 @@ window.DOTA2RAILS.matches.components.scoreboard = (() ->
     # sum levels, kills, deaths, assists, gold, last hits, denies, gpm, xpm
     summable_cols = [2,3,4,5,12,13,14,15,16]
 
-    total_row = ['Total']
-    for i in summable_cols
-      total_row[i] = data[team].reduce(((sum,row) -> sum + row[i]), 0)
-    data[team].push total_row
+    for team of data
+      total_row = ['Total']
+      for i in summable_cols
+        total_row[i] = data[team].reduce(((sum,row) -> sum + row[i]), 0)
+      data[team].push total_row
 
     # DATA JOIN
     radtable = d3.select("#radiant_players")
