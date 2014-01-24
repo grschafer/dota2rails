@@ -1,7 +1,4 @@
-# dotarecap
-
-Note: The working title was "Dota2rails", so many pieces of this project still
-bear that name.
+# dota2rails
 
 ## What is it
 
@@ -16,7 +13,7 @@ all animated with d3.js.
 
 ## How to get it working
 
-The entire website can be deployed with <https://github.com/grschafer/dotarecap-deploy>,
+The entire website can be deployed with <https://github.com/grschafer/dota2rails-deploy>,
 which uses vagrant and ansible. This repo only contains the rails webapp
 portion of the site, which is independent from the replay-parsing backend
 (alacrity), but still depends on mongodb for match/league metadata.
