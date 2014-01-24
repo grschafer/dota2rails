@@ -7,10 +7,13 @@ Dota2rails::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   root 'matches#index'
+  get 'mymatches' => 'matches#mymatches'
+  get 'about' => 'matches#about'
+
+  # ajax endpoints
   get 'matchurls' => 'matches#matchurls'
   post 'request_match' => 'matches#request_match'
   post 'request_notification' => 'matches#request_notification'
-  get 'mymatches' => 'matches#mymatches'
   post 'filter' => 'matches#filter'
 
   # authentication endpoints

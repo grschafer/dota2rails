@@ -9,14 +9,17 @@ class MatchesController < ApplicationController
   @@url_matchid_regex = Regexp.new('.*?(\d+.dem)$')
   @@steamid_32bit_mask = 2**32 - 1
 
+
+  def about
+  end
+
   # TODO: clean up make_filter_dropdowns and @league_hash
   #       not DRY and extra unnecessary work being done in filter method
-
   # GET /matches
   # GET /matches.json
   def index
     @matches = match_db.find({'requester' => 'public'}).to_a
-    if stale?(etag: @matches)
+    if stale?(etag: [@matches, session[:user]])
       make_filter_dropdowns(@matches)
       @league_hash = Hash[@leagues.map { |x| x.values }]
       @league_hash.default = "None"
@@ -27,7 +30,7 @@ class MatchesController < ApplicationController
     # shows matches current user played in or requested
     @matches = match_db.find({'$or' => [{'requester' => session[:user][:uid]},
                                   {'players.account_id' => session[:user][:uid]}]}).to_a
-    if stale?(etag:[@matches, session[:user][:uid]])
+    if stale?(etag: [@matches, session[:user][:uid]])
       @queued_matches = userupload_db.find({'requesting_user' => session[:user][:uid]},
                                 {:fields => {'_id' => 0, 'match_id' => 1, 'url' => 1}}).to_a
       @queued_matches.map! do |m|
