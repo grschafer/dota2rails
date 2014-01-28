@@ -187,9 +187,9 @@ class MatchesController < ApplicationController
                               {:fields => {'_id' => 0, 'leagueid' => 1, 'name' => 1}}).to_a
       rteams = matches.map { |x| x['radiant_name'] }
       dteams = matches.map { |x| x['dire_name'] }
-      teams = (rteams + dteams).uniq
+      teams = (rteams + dteams).uniq.sort { |a,b| a.downcase <=> b.downcase }
 
-      @leagues = leagues
+      @leagues = leagues.sort { |a,b| a['name'].downcase <=> b['name'].downcase }
       @teams = teams
     end
 end
