@@ -185,9 +185,9 @@ class MatchesController < ApplicationController
       league_ids = matches.uniq { |x| x['leagueid'] }.map { |x| x['leagueid'] }
       leagues = league_db.find({'leagueid' => {'$in' => league_ids}},
                               {:fields => {'_id' => 0, 'leagueid' => 1, 'name' => 1}}).to_a
-      rteams = matches.uniq { |x| x['radiant_name'] }.map { |x| x['radiant_name'] }
-      dteams = matches.uniq { |x| x['dire_name'] }.map { |x| x['dire_name'] }
-      teams = rteams + dteams
+      rteams = matches.map { |x| x['radiant_name'] }
+      dteams = matches.map { |x| x['dire_name'] }
+      teams = (rteams + dteams).uniq
 
       @leagues = leagues
       @teams = teams
